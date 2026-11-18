@@ -10,11 +10,13 @@ It works with any backend (Node, Django, Laravel, Go, …): point `NEXT_PUBLIC_A
 | --- | --- |
 | Framework | [Next.js 16](https://nextjs.org) (App Router, Turbopack, Cache Components), React 19 |
 | Language | TypeScript |
-| Styling | Tailwind CSS 4 + CSS variables in `src/app/globals.css` |
+| Styling | Tailwind CSS 4 + design tokens in `src/app/globals.css` |
+| Components | [shadcn/ui](https://ui.shadcn.com) (Radix UI primitives), copied into `src/components` as `Ds*` components |
+| Tables | TanStack Table 9 (`DsDataTable`) |
 | Server state | TanStack Query 5 |
 | Client state | Zustand 5 |
 | Forms | React Hook Form + Zod 4 |
-| UI helpers | Headless UI, lucide-react icons, sonner toasts |
+| UI helpers | lucide-react icons, sonner toasts, react-day-picker, class-variance-authority |
 
 > **Note:** Next.js 16 has breaking changes compared to older versions. Before writing code, check the docs bundled in `node_modules/next/dist/docs/` (see `AGENTS.md`).
 
@@ -63,9 +65,10 @@ src/
 │   └── not-found.tsx    #   404 page
 ├── api/                 # HTTP client, error types, query client factory, endpoints
 ├── components/          # Shared design-system components (Ds*), guards, layouts
-├── constants/           # Routes and other constants
+├── constants/           # Routes, locale/direction and other constants
 ├── features/            # Feature modules (auth, health, …)
 ├── hooks/               # Shared hooks (e.g. useAppForm)
+├── lib/                 # Small utilities (cn)
 ├── providers/           # AppProviders: React Query, toasts, theme
 ├── stores/              # Zustand stores (theme)
 └── types/               # Shared types
@@ -165,19 +168,105 @@ const form = useAppForm(authLoginSchema);
 
 ### Design system
 
-Shared components live in `src/components` and start with `Ds`:
+Every shared component lives in its own folder in `src/components` and starts with `Ds`. There is **one component per thing**: the shadcn/ui source was merged into the `Ds*` file, so there is no separate `ui/` folder to keep in sync. Import everything from `@/src/components`.
+
+Open **`/ui-kit`** in the dev server to see every component and its variants (source: `src/app/ui-kit/page.tsx`).
 
 | Component | Purpose |
 | --- | --- |
-| `DsBox` | Layout container; `variant="card"`, `padding`, `as` |
-| `DsTypography` | Text; `variant` = `h1`–`h4`, `body`, `bodySmall`, `helperText`, `caption` |
-| `DsButton` | Button; `variant` = `primary`, `secondary`, `ghost`, `danger`; `size` = `sm`, `md`, `lg` |
-| `DsInput` / `DsFormInput` | Text input, with icons and invalid state / React Hook Form version |
+| `DsBox` | Layout container; `variant` = `plain`, `card`, `muted`; `padding`; `shadow` = `true`, `sm`, `md`, `lg`; `as` |
+| `DsTypography` | Text; `variant` = `h1`–`h4`, `body`, `bodySmall`, `helperText`, `caption`; `color` |
+| `DsButton` | `variant` = `primary`, `secondary`, `outline`, `ghost`, `danger`, `link`; `size` = `xs`–`lg`, `icon-xs`–`icon-lg`; `loading`, `asChild` |
+| `DsBadge` | Small status label |
+| `DsInput` / `DsFormInput` | Text input with icons and invalid state / React Hook Form version with label and error |
+| `DsTextarea`, `DsCheckbox`, `DsSelect` | Other form controls |
 | `DsForm` | Form wired to React Hook Form |
-| `DsField`, `DsLabel`, … | Field layout helpers (Headless UI) |
+| `DsField`, `DsLabel`, `DsFieldset`, … | Field layout helpers |
+| `DsDialog`, `DsPopover`, `DsTooltip`, `DsDropdownMenu` | Overlays (Radix: focus trap, keyboard, positioning) |
+| `DsTabs`, `DsAccordion` | Disclosure |
+| `DsCalendar` | Date picker calendar (react-day-picker) |
+| `DsTable` / `DsDataTable` | Plain table primitives / TanStack Table with sorting, pagination, loading and empty states |
+| `DsSkeleton`, `DsSeparator` | Placeholders and dividers |
 | `DsLoading` | The one loading indicator for the whole app; `fullScreen` for page-level loading |
 
-Colors come from CSS variables (`--color-primary`, `--color-text-primary`, …) in `globals.css`. Use them in Tailwind as `bg-(--color-primary)` so components follow light/dark mode automatically.
+**Colors** are design tokens in `globals.css` (`--primary`, `--muted-foreground`, `--success-soft`, …) with light and dark values. Each one is a Tailwind utility (`bg-primary`, `text-muted-foreground`, `bg-success-soft`), so use the utilities and never hard-code colors. The names follow shadcn's convention, so components copied from shadcn pick up the brand automatically.
+
+**Text direction:** set `APP_DIR` (and `APP_LANG`) in `src/constants/locale.ts`. `<html dir>`, Radix menus and popovers, and toasts all follow it. Use logical classes (`ms-*`, `ps-*`, `start-*`, `text-start`) instead of `ml-*` / `left-*` so layouts flip correctly.
+
+### Adding a shadcn/ui component
+
+The shadcn CLI is configured in `components.json` (Radix base, Nova style, RTL enabled, lucide icons). The CLI writes a flat file with shadcn's names, so each new component needs a few manual steps to match the project layout. `DsAccordion` and `DsCalendar` were added this way and are good references.
+
+Browse the available components at [ui.shadcn.com/docs/components](https://ui.shadcn.com/docs/components).
+
+**1. Generate the file**
+
+```bash
+npx shadcn@latest add <name>       # e.g. npx shadcn@latest add switch
+```
+
+This creates `src/components/<name>.tsx` and installs any npm packages it needs.
+
+**2. Delete duplicates the CLI re-created**
+
+If the component depends on one we already have (for example `calendar` depends on `button`), the CLI also writes `src/components/button.tsx`. Delete it. We use our existing `DsButton` instead. Check with `git status`.
+
+**3. Move it into its own folder**
+
+```text
+src/components/switch.tsx  →  src/components/Switch/DsSwitch.tsx
+```
+
+Then add `src/components/Switch/index.ts`:
+
+```ts
+export * from './DsSwitch';
+```
+
+And register it in `src/components/index.ts` (keep the list alphabetical):
+
+```ts
+export * from "./Switch";
+```
+
+**4. Rename to the `Ds` convention**
+
+Inside the file, rename every exported component and helper:
+
+| shadcn | Project |
+| --- | --- |
+| `Switch`, `SwitchThumb` | `DsSwitch`, `DsSwitchThumb` |
+| `switchVariants` | `dsSwitchVariants` |
+
+Do **not** rename the Radix import alias (`import { Switch as SwitchPrimitive } from "radix-ui"` stays as is).
+
+**5. Fix the imports**
+
+| shadcn import | Replace with |
+| --- | --- |
+| `import { cn } from "cn"` | `import { cn } from "@/src/lib/utils"` |
+| `import { Button, buttonVariants } from "@/src/components/button"` | `import { DsButton, dsButtonVariants } from "../Button"` |
+| Any other `@/src/components/<name>` | `../<Name>` (relative, so folders don't import themselves through the barrel) |
+
+shadcn's button variants map to ours like this: `default` → `primary`, `destructive` → `danger`; sizes `default` → `md`, `icon` / `icon-sm` / `icon-xs` / `icon-lg` stay the same.
+
+**6. Adjust the styles (optional)**
+
+The component already uses the shared tokens (`bg-primary`, `border-input`, …), so it matches the theme as is. Change classes or add `cva` variants directly in the `Ds*` file. It is our code now.
+
+**7. Add it to the UI kit**
+
+Add a section to `src/app/ui-kit/page.tsx` showing its variants, and a link in the `sections` list at the top.
+
+**8. Check**
+
+```bash
+npx tsc --noEmit
+npm run lint
+npm run build
+```
+
+> **Prerender gotcha:** with Cache Components, Next.js fails the build if a Client Component reads `new Date()`, `Date.now()` or `Math.random()` while rendering. Put that code in its own component that calls `use(io())` (from `next/cache`) first, and wrap it in `<Suspense>`. See `CalendarDemo` in the UI kit and `node_modules/next/dist/docs/01-app/03-api-reference/04-functions/io.md`.
 
 ### Theme
 
