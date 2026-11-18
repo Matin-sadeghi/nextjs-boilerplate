@@ -1,91 +1,51 @@
-import * as Headless from '@headlessui/react'
-import clsx from 'clsx'
-import type React from 'react'
+import type { ComponentProps } from 'react';
 
-export function DsFieldset({
-  className,
-  ...props
-}: { className?: string } & Omit<Headless.FieldsetProps, 'as' | 'className'>) {
+import { cn } from '@/src/lib/utils';
+
+/** Groups several fields under a legend. */
+export function DsFieldset({ className, ...props }: ComponentProps<'fieldset'>) {
   return (
-    <Headless.Fieldset
+    <fieldset
+      className={cn('flex flex-col gap-6 disabled:opacity-50 *:data-[slot=description]:-mt-4', className)}
       {...props}
-      className={clsx(className, '*:data-[slot=text]:mt-1 [&>*+[data-slot=control]]:mt-6')}
     />
-  )
+  );
 }
 
-export function DsLegend({
-  className,
-  ...props
-}: { className?: string } & Omit<Headless.LegendProps, 'as' | 'className'>) {
+export function DsLegend({ className, ...props }: ComponentProps<'legend'>) {
   return (
-    <Headless.Legend
+    <legend
       data-slot="legend"
+      className={cn('mb-2 text-base font-semibold text-heading', className)}
       {...props}
-      className={clsx(
-        className,
-        'text-base/6 font-semibold text-zinc-950 data-disabled:opacity-50 sm:text-sm/6 dark:text-white'
-      )}
     />
-  )
+  );
 }
 
-export function DsFieldGroup({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
-  return <div data-slot="control" {...props} className={clsx(className, 'space-y-8')} />
+export function DsFieldGroup({ className, ...props }: ComponentProps<'div'>) {
+  return <div data-slot="field-group" className={cn('flex flex-col gap-6', className)} {...props} />;
 }
 
-export function DsField({ className, ...props }: { className?: string } & Omit<Headless.FieldProps, 'as' | 'className'>) {
+export interface DsFieldProps extends ComponentProps<'div'> {
+  disabled?: boolean;
+}
+
+/** One label + control + description/error stack. */
+export function DsField({ className, disabled, ...props }: DsFieldProps) {
   return (
-    <Headless.Field
+    <div
+      data-slot="field"
+      data-disabled={disabled || undefined}
+      className={cn('group flex flex-col gap-2 data-disabled:opacity-60', className)}
       {...props}
-      className={clsx(
-        className,
-        '[&>[data-slot=label]+[data-slot=control]]:mt-3',
-        '[&>[data-slot=label]+[data-slot=description]]:mt-1',
-        '[&>[data-slot=description]+[data-slot=control]]:mt-3',
-        '[&>[data-slot=control]+[data-slot=description]]:mt-3',
-        '[&>[data-slot=control]+[data-slot=error]]:mt-3',
-        '*:data-[slot=label]:font-medium'
-      )}
     />
-  )
+  );
 }
 
-export function DsLabel({ className, ...props }: { className?: string } & Omit<Headless.LabelProps, 'as' | 'className'>) {
-  return (
-    <Headless.Label
-      data-slot="label"
-      {...props}
-      className={clsx(
-        className,
-        'text-base/6 text-zinc-950 select-none data-disabled:opacity-50 sm:text-sm/6 dark:text-white'
-      )}
-    />
-  )
+export function DsDescription({ className, ...props }: ComponentProps<'p'>) {
+  return <p data-slot="description" className={cn('text-sm text-muted-foreground', className)} {...props} />;
 }
 
-export function DsDescription({
-  className,
-  ...props
-}: { className?: string } & Omit<Headless.DescriptionProps, 'as' | 'className'>) {
-  return (
-    <Headless.Description
-      data-slot="description"
-      {...props}
-      className={clsx(className, 'text-base/6 text-zinc-500 data-disabled:opacity-50 sm:text-sm/6 dark:text-zinc-400')}
-    />
-  )
-}
-
-export function DsErrorMessage({
-  className,
-  ...props
-}: { className?: string } & Omit<Headless.DescriptionProps, 'as' | 'className'>) {
-  return (
-    <Headless.Description
-      data-slot="error"
-      {...props}
-      className={clsx(className, 'text-base/6 text-red-600 data-disabled:opacity-50 sm:text-sm/6 dark:text-red-500')}
-    />
-  )
+export function DsErrorMessage({ className, ...props }: ComponentProps<'p'>) {
+  return <p data-slot="error" role="alert" className={cn('text-sm text-destructive', className)} {...props} />;
 }

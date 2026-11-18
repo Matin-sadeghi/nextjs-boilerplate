@@ -1,37 +1,47 @@
 import type { ElementType, HTMLAttributes } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-type DsBoxVariant = 'plain' | 'card';
-type DsBoxPadding = 'none' | 'sm' | 'md' | 'lg';
+import { cn } from '@/src/lib/utils';
 
-export interface DsBoxProps extends HTMLAttributes<HTMLElement> {
+const dsBoxVariants = cva('', {
+  variants: {
+    variant: {
+      plain: '',
+      card: 'rounded-2xl border border-card-border bg-card text-card-foreground',
+      muted: 'rounded-xl bg-muted',
+    },
+    padding: {
+      none: '',
+      sm: 'p-2',
+      md: 'p-4',
+      lg: 'p-6',
+    },
+    shadow: {
+      none: '',
+      sm: 'shadow-card-sm',
+      md: 'shadow-card',
+      lg: 'shadow-card-lg',
+    },
+  },
+  defaultVariants: { variant: 'plain', padding: 'none', shadow: 'none' },
+});
+
+export type DsBoxShadow = 'sm' | 'md' | 'lg';
+
+export interface DsBoxProps
+  extends HTMLAttributes<HTMLElement>,
+    Omit<VariantProps<typeof dsBoxVariants>, 'shadow'> {
   as?: ElementType;
-  variant?: DsBoxVariant;
-  padding?: DsBoxPadding;
+  /** Elevation. `true` is the same as `"md"`; `false` / omitted means no shadow. */
+  shadow?: boolean | DsBoxShadow;
 }
 
-const variantClasses: Record<DsBoxVariant, string> = {
-  plain: '',
-  card: 'rounded-2xl border border-(--border-card) bg-(--color-card-background) shadow-(--shadow-card)',
-};
+export const DsBox = ({ as: Component = 'div', variant, padding, shadow, className, ...props }: DsBoxProps) => {
+  const shadowLevel = shadow === true ? 'md' : shadow || 'none';
 
-const paddingClasses: Record<DsBoxPadding, string> = {
-  none: '',
-  sm: 'p-2',
-  md: 'p-4',
-  lg: 'p-6',
-};
-
-export const DsBox = ({
-  as: Component = 'div',
-  variant = 'plain',
-  padding = 'none',
-  className = '',
-  ...props
-}: DsBoxProps) => {
   return (
-    <Component
-      className={`${variantClasses[variant]} ${paddingClasses[padding]} ${className}`}
-      {...props}
-    />
+    <Component className={cn(dsBoxVariants({ variant, padding, shadow: shadowLevel }), className)} {...props} />
   );
 };
+
+export { dsBoxVariants };

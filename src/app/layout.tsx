@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
+import { APP_DIR, APP_LANG } from "../constants";
 import { AppProviders } from "../providers/app-providers";
 
 const geistSans = Geist({
@@ -24,7 +25,8 @@ const themeInitScript = `try{var t=JSON.parse(localStorage.getItem('theme-storag
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="en"
+      lang={APP_LANG}
+      dir={APP_DIR}
       className={`${geistSans.variable} ${geistMono.variable}`}
       suppressHydrationWarning
     >

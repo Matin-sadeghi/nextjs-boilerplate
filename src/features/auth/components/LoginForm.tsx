@@ -1,15 +1,8 @@
 "use client";
-import {
-  DsBox,
-  DsButton,
-  DsForm,
-  DsFormInput,
-  DsTypography,
-} from "@/src/components";
-import { DsField, DsLabel } from "@/src/components/Field";
-
-import { useAppForm } from "@/src/hooks";
 import Link from "next/link";
+
+import { DsButton, DsForm, DsFormInput, DsTypography } from "@/src/components";
+import { useAppForm } from "@/src/hooks";
 import { useLogin } from "../hooks";
 import { AuthLoginFormData, authLoginSchema } from "../types";
 
@@ -21,23 +14,19 @@ export const LoginForm = () => {
   };
 
   return (
-    <DsForm onSubmit={onSubmit} form={form} className="grid grid-cols-1 gap-8">
-      <DsTypography>Sign in to your account</DsTypography>
-      <DsField>
-        <DsLabel>Email</DsLabel>
-        <DsFormInput type="email" name="email" />
-      </DsField>
-      <DsField>
-        <DsLabel>Password</DsLabel>
-        <DsFormInput type="password" name="password" />
-      </DsField>
-      <DsBox className="flex items-center justify-between">
-        <DsTypography variant="helperText">
-          <Link href="/forgot-password">Forgot password?</Link>
-        </DsTypography>
-      </DsBox>
-      <DsButton type="submit" className="w-full">
-        {loading ? "Loading..." : "Login"}
+    <DsForm onSubmit={onSubmit} form={form} className="grid grid-cols-1 gap-6">
+      <DsTypography variant="h3" as="h1">
+        Sign in to your account
+      </DsTypography>
+      <DsFormInput type="email" name="email" label="Email" autoComplete="email" />
+      <DsFormInput type="password" name="password" label="Password" autoComplete="current-password" />
+      <DsTypography variant="helperText">
+        <Link href="/forgot-password" className="hover:text-primary">
+          Forgot password?
+        </Link>
+      </DsTypography>
+      <DsButton type="submit" className="w-full" loading={loading}>
+        Login
       </DsButton>
     </DsForm>
   );

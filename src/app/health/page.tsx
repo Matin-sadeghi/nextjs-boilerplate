@@ -10,20 +10,18 @@ export default function Home() {
 
   return (
     <DsBox className="flex flex-1 flex-col items-center justify-center gap-4 px-6 font-sans">
-      <DsTypography as="h1" color="info">
+      <DsTypography as="h1" variant="h2" color="info">
         NextJs boilerplate
       </DsTypography>
-      <DsTypography color="black" variant="body">
+      <DsTypography variant="body">
         {isLoading && "Checking API status…"}
         {!isLoading && isError && "Could not connect to the API"}
         {!isLoading && !isError && health
           ? `API: ${health.service} — ${health.status}`
           : null}
       </DsTypography>
-      <DsButton color="blue" onClick={() => void refetch()}>
-        Restart
-      </DsButton>
-      <DsButton value={""} color="blue" onClick={toggleTheme}>
+      <DsButton onClick={() => void refetch()}>Restart</DsButton>
+      <DsButton variant="outline" onClick={toggleTheme}>
         {theme}
       </DsButton>
     </DsBox>

@@ -1,21 +1,49 @@
 import type { ElementType, HTMLAttributes } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-type DsTypographyVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'body' | 'bodySmall' | 'helperText' | 'caption';
+import { cn } from '@/src/lib/utils';
 
-export interface DsTypographyProps extends HTMLAttributes<HTMLElement> {
-  as?: ElementType;
-  variant?: DsTypographyVariant;
-}
+const dsTypographyVariants = cva('', {
+  variants: {
+    variant: {
+      h1: 'text-3xl font-bold',
+      h2: 'text-2xl font-bold',
+      h3: 'text-xl font-semibold',
+      h4: 'text-lg font-semibold',
+      body: 'text-base',
+      bodySmall: 'text-sm',
+      helperText: 'text-sm',
+      caption: 'text-xs',
+    },
+    color: {
+      default: 'text-foreground',
+      heading: 'text-heading',
+      secondary: 'text-foreground-secondary',
+      muted: 'text-muted-foreground',
+      primary: 'text-primary',
+      success: 'text-success',
+      warning: 'text-warning',
+      danger: 'text-destructive',
+      info: 'text-info',
+      inherit: '',
+    },
+  },
+  defaultVariants: { variant: 'body' },
+});
 
-const variantClasses: Record<DsTypographyVariant, string> = {
-  h1: 'text-3xl font-bold text-(--color-text-heading)',
-  h2: 'text-2xl font-bold text-(--color-text-heading)',
-  h3: 'text-xl font-semibold text-(--color-text-heading)',
-  h4: 'text-lg font-semibold text-(--color-text-heading)',
-  body: 'text-base text-(--color-text-primary)',
-  bodySmall: 'text-sm text-(--color-text-primary)',
-  helperText: 'text-sm text-(--color-text-secondary)',
-  caption: 'text-xs text-(--color-text-muted)',
+type DsTypographyVariant = NonNullable<VariantProps<typeof dsTypographyVariants>['variant']>;
+export type DsTypographyColor = NonNullable<VariantProps<typeof dsTypographyVariants>['color']>;
+
+/** Color used when `color` is not passed. */
+const defaultColors: Record<DsTypographyVariant, DsTypographyColor> = {
+  h1: 'heading',
+  h2: 'heading',
+  h3: 'heading',
+  h4: 'heading',
+  body: 'default',
+  bodySmall: 'default',
+  helperText: 'secondary',
+  caption: 'muted',
 };
 
 const defaultTags: Record<DsTypographyVariant, ElementType> = {
@@ -29,8 +57,21 @@ const defaultTags: Record<DsTypographyVariant, ElementType> = {
   caption: 'span',
 };
 
-export const DsTypography = ({ as, variant = 'body', className = '', ...props }: DsTypographyProps) => {
+export interface DsTypographyProps extends Omit<HTMLAttributes<HTMLElement>, 'color'> {
+  as?: ElementType;
+  variant?: DsTypographyVariant;
+  color?: DsTypographyColor;
+}
+
+export const DsTypography = ({ as, variant = 'body', color, className, ...props }: DsTypographyProps) => {
   const Component = as ?? defaultTags[variant];
 
-  return <Component className={`${variantClasses[variant]} ${className}`} {...props} />;
+  return (
+    <Component
+      className={cn(dsTypographyVariants({ variant, color: color ?? defaultColors[variant] }), className)}
+      {...props}
+    />
+  );
 };
+
+export { dsTypographyVariants };
