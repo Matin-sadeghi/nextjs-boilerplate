@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { Suspense, use, useState, type ReactNode } from "react";
+import { io } from "next/cache";
 import Link from "next/link";
 import {
   Bell,
+  CalendarIcon,
   Copy,
   Mail,
   MoreHorizontal,
@@ -16,6 +18,7 @@ import {
   User as UserIcon,
 } from "lucide-react";
 import { toast } from "sonner";
+import type { DateRange } from "react-day-picker";
 import { z } from "zod";
 
 import {
@@ -27,6 +30,7 @@ import {
   DsBadge,
   DsBox,
   DsButton,
+  DsCalendar,
   DsCheckbox,
   DsDataTable,
   DsDescription,
@@ -248,11 +252,92 @@ const sections = [
   ["overlays", "Overlays"],
   ["tabs", "Tabs"],
   ["accordion", "Accordion"],
+  ["calendar", "Calendar"],
   ["loading", "Loading"],
   ["table", "Table"],
   ["data-table", "Data table"],
   ["rtl", "RTL"],
 ] as const;
+
+/**
+ * Reads the current date, so it must not be part of the prerendered static
+ * shell: `use(io())` suspends during prerender (Cache Components) and the
+ * <Suspense> fallback is shipped instead.
+ */
+function CalendarDemo() {
+  use(io());
+
+  const [date, setDate] = useState<Date | undefined>(() => new Date());
+  const [range, setRange] = useState<DateRange | undefined>(() => {
+    const from = new Date();
+    return { from, to: new Date(from.getFullYear(), from.getMonth(), from.getDate() + 6) };
+  });
+  const [birthday, setBirthday] = useState<Date | undefined>();
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [today] = useState(() => new Date());
+
+  return (
+    <>
+      <div className="flex flex-wrap items-start gap-6">
+        <Row label='mode="single"'>
+          <DsBox variant="card" className="overflow-hidden">
+            <DsCalendar mode="single" selected={date} onSelect={setDate} />
+          </DsBox>
+        </Row>
+  
+        <Row label='mode="range" · numberOfMonths={2}'>
+          <DsBox variant="card" className="overflow-hidden">
+            <DsCalendar
+              mode="range"
+              selected={range}
+              onSelect={setRange}
+              numberOfMonths={2}
+              disabled={{ before: today }}
+            />
+          </DsBox>
+        </Row>
+  
+        <Row label='captionLayout="dropdown"'>
+          <DsBox variant="card" className="overflow-hidden">
+            <DsCalendar mode="single" captionLayout="dropdown" selected={date} onSelect={setDate} />
+          </DsBox>
+        </Row>
+      </div>
+  
+      <Row label="Date picker">
+        <DsField className="w-64">
+          <DsLabel htmlFor="kit-birthday">Birthday</DsLabel>
+          <DsPopover open={pickerOpen} onOpenChange={setPickerOpen}>
+            <DsPopoverTrigger asChild>
+              <DsButton
+                id="kit-birthday"
+                variant="outline"
+                className="w-full justify-between font-normal"
+              >
+                <span className={birthday ? undefined : "text-muted-foreground"}>
+                  {birthday ? birthday.toLocaleDateString() : "Select date"}
+                </span>
+                <CalendarIcon className="text-muted-foreground" />
+              </DsButton>
+            </DsPopoverTrigger>
+            <DsPopoverContent className="w-auto overflow-hidden p-0" align="start">
+              <DsCalendar
+                mode="single"
+                captionLayout="dropdown"
+                selected={birthday}
+                defaultMonth={birthday}
+                onSelect={(d) => {
+                  setBirthday(d);
+                  setPickerOpen(false);
+                }}
+              />
+            </DsPopoverContent>
+          </DsPopover>
+        </DsField>
+      </Row>
+    </>
+  );
+}
 
 /* -------------------------------------------------------------------------- */
 /*                                    Page                                    */
@@ -712,6 +797,17 @@ export default function UiKitPage() {
             </DsDropdownMenuContent>
           </DsDropdownMenu>
         </div>
+      </Section>
+
+      {/* Calendar */}
+      <Section
+        id="calendar"
+        title="DsCalendar"
+        description='react-day-picker. mode="single" | "range" | "multiple", captionLayout="dropdown", date picker = DsPopover + DsCalendar.'
+      >
+        <Suspense fallback={<DsSkeleton className="h-80 w-full" />}>
+          <CalendarDemo />
+        </Suspense>
       </Section>
 
       {/* Accordion */}
