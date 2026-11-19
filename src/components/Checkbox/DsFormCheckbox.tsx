@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { DsFormField, type DsFormFieldBaseProps } from '../Form';
-import { DsCheckbox } from './DsCheckbox';
+import { DsFormField, type DsFormFieldBaseProps } from "../Form";
+import { DsCheckbox } from "./DsCheckbox";
 
 export type DsFormCheckboxProps = DsFormFieldBaseProps;
 

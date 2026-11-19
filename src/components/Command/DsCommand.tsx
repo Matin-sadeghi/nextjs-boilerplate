@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Command as CommandPrimitive } from "cmdk"
-import { cn } from "@/src/lib/utils"
+import { cn } from "@/src/lib/utils";
+import { Command as CommandPrimitive } from "cmdk";
+import * as React from "react";
 
+import { CheckIcon, SearchIcon } from "lucide-react";
 import {
   DsDialog,
   DsDialogContent,
   DsDialogDescription,
   DsDialogHeader,
   DsDialogTitle,
-} from "../Dialog"
-import { SearchIcon, CheckIcon } from "lucide-react"
+} from "../Dialog";
 
 function DsCommand({
   className,
@@ -22,11 +22,11 @@ function DsCommand({
       data-slot="command"
       className={cn(
         "flex size-full flex-col overflow-hidden rounded-xl! bg-popover p-1 text-popover-foreground",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function DsCommandDialog({
@@ -37,17 +37,17 @@ function DsCommandDialog({
   showCloseButton = false,
   ...props
 }: React.ComponentProps<typeof DsDialog> & {
-  title?: string
-  description?: string
-  className?: string
-  showCloseButton?: boolean
+  title?: string;
+  description?: string;
+  className?: string;
+  showCloseButton?: boolean;
 }) {
   return (
     <DsDialog {...props}>
       <DsDialogContent
         className={cn(
           "top-1/3 translate-y-0 overflow-hidden rounded-xl! p-0",
-          className
+          className,
         )}
         showCloseButton={showCloseButton}
       >
@@ -58,7 +58,7 @@ function DsCommandDialog({
         {children}
       </DsDialogContent>
     </DsDialog>
-  )
+  );
 }
 
 function DsCommandInput({
@@ -70,17 +70,20 @@ function DsCommandInput({
       data-slot="command-input-wrapper"
       className="flex h-9 items-center gap-2 border-b border-border px-3"
     >
-      <SearchIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+      <SearchIcon
+        aria-hidden="true"
+        className="size-4 shrink-0 text-muted-foreground"
+      />
       <CommandPrimitive.Input
         data-slot="command-input"
         className={cn(
           "h-full w-full bg-transparent text-sm outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
-          className
+          className,
         )}
         {...props}
       />
     </div>
-  )
+  );
 }
 
 function DsCommandList({
@@ -92,11 +95,11 @@ function DsCommandList({
       data-slot="command-list"
       className={cn(
         "no-scrollbar max-h-72 scroll-py-1 overflow-x-hidden overflow-y-auto outline-none",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function DsCommandEmpty({
@@ -109,7 +112,7 @@ function DsCommandEmpty({
       className={cn("py-6 text-center text-sm", className)}
       {...props}
     />
-  )
+  );
 }
 
 function DsCommandGroup({
@@ -121,11 +124,11 @@ function DsCommandGroup({
       data-slot="command-group"
       className={cn(
         "overflow-hidden p-1 text-foreground **:[[cmdk-group-heading]]:px-2 **:[[cmdk-group-heading]]:py-1.5 **:[[cmdk-group-heading]]:text-xs **:[[cmdk-group-heading]]:font-medium **:[[cmdk-group-heading]]:text-muted-foreground",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function DsCommandSeparator({
@@ -138,7 +141,7 @@ function DsCommandSeparator({
       className={cn("-mx-1 h-px bg-border", className)}
       {...props}
     />
-  )
+  );
 }
 
 function DsCommandItem({
@@ -151,14 +154,14 @@ function DsCommandItem({
       data-slot="command-item"
       className={cn(
         "group/command-item relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none in-data-[slot=dialog-content]:rounded-lg! data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-selected:bg-muted data-selected:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-selected:*:[svg]:text-foreground",
-        className
+        className,
       )}
       {...props}
     >
       {children}
       <CheckIcon className="ms-auto opacity-0 group-has-data-[slot=command-shortcut]/command-item:hidden group-data-[checked=true]/command-item:opacity-100" />
     </CommandPrimitive.Item>
-  )
+  );
 }
 
 function DsCommandShortcut({
@@ -170,21 +173,21 @@ function DsCommandShortcut({
       data-slot="command-shortcut"
       className={cn(
         "ms-auto text-xs tracking-widest text-muted-foreground group-data-selected/command-item:text-foreground",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 export {
   DsCommand,
   DsCommandDialog,
-  DsCommandInput,
-  DsCommandList,
   DsCommandEmpty,
   DsCommandGroup,
+  DsCommandInput,
   DsCommandItem,
-  DsCommandShortcut,
+  DsCommandList,
   DsCommandSeparator,
-}
+  DsCommandShortcut,
+};

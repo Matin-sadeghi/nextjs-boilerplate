@@ -1,10 +1,15 @@
-'use client';
+"use client";
 
-import { useState, type FocusEventHandler, type ReactNode, type Ref } from 'react';
-import { Check, ChevronsUpDown } from 'lucide-react';
+import { Check, ChevronsUpDown } from "lucide-react";
+import {
+  useState,
+  type FocusEventHandler,
+  type ReactNode,
+  type Ref,
+} from "react";
 
-import { cn } from '@/src/lib/utils';
-import { DsButton } from '../Button';
+import { cn } from "@/src/lib/utils";
+import { DsButton } from "../Button";
 import {
   DsCommand,
   DsCommandEmpty,
@@ -12,8 +17,8 @@ import {
   DsCommandInput,
   DsCommandItem,
   DsCommandList,
-} from '../Command';
-import { DsPopover, DsPopoverContent, DsPopoverTrigger } from '../Popover';
+} from "../Command";
+import { DsPopover, DsPopoverContent, DsPopoverTrigger } from "../Popover";
 
 export interface DsComboboxOption {
   value: string;
@@ -43,7 +48,7 @@ export interface DsComboboxProps {
   /** Forwarded to the trigger button (react-hook-form uses it to focus the field on error). */
   ref?: Ref<HTMLButtonElement>;
   onBlur?: FocusEventHandler<HTMLButtonElement>;
-  'aria-describedby'?: string;
+  "aria-describedby"?: string;
 }
 
 /**
@@ -54,9 +59,9 @@ export function DsCombobox({
   options,
   value,
   onValueChange,
-  placeholder = 'Select…',
-  searchPlaceholder = 'Search…',
-  emptyText = 'No results.',
+  placeholder = "Select…",
+  searchPlaceholder = "Search…",
+  emptyText = "No results.",
   clearable = true,
   disabled,
   invalid,
@@ -65,7 +70,7 @@ export function DsCombobox({
   contentClassName,
   ref,
   onBlur,
-  'aria-describedby': ariaDescribedBy,
+  "aria-describedby": ariaDescribedBy,
 }: DsComboboxProps) {
   const [open, setOpen] = useState(false);
   const selected = options.find((option) => option.value === value);
@@ -83,18 +88,29 @@ export function DsCombobox({
           aria-expanded={open}
           aria-invalid={invalid || undefined}
           disabled={disabled}
-          className={cn('w-full justify-between px-3 font-normal', className)}
+          className={cn("w-full justify-between px-3 font-normal", className)}
         >
-          <span className={cn('flex min-w-0 items-center gap-2 truncate', !selected && 'text-muted-foreground')}>
+          <span
+            className={cn(
+              "flex min-w-0 items-center gap-2 truncate",
+              !selected && "text-muted-foreground",
+            )}
+          >
             {selected?.icon}
             {selected ? selected.label : placeholder}
           </span>
-          <ChevronsUpDown aria-hidden="true" className="text-muted-foreground" />
+          <ChevronsUpDown
+            aria-hidden="true"
+            className="text-muted-foreground"
+          />
         </DsButton>
       </DsPopoverTrigger>
       <DsPopoverContent
         align="start"
-        className={cn('w-(--radix-popover-trigger-width) min-w-48 p-0', contentClassName)}
+        className={cn(
+          "w-(--radix-popover-trigger-width) min-w-48 p-0",
+          contentClassName,
+        )}
       >
         <DsCommand>
           <DsCommandInput placeholder={searchPlaceholder} />
@@ -111,7 +127,9 @@ export function DsCombobox({
                     keywords={[option.label, ...(option.keywords ?? [])]}
                     disabled={option.disabled}
                     onSelect={() => {
-                      onValueChange?.(isSelected && clearable ? undefined : option.value);
+                      onValueChange?.(
+                        isSelected && clearable ? undefined : option.value,
+                      );
                       setOpen(false);
                     }}
                   >
@@ -119,7 +137,10 @@ export function DsCombobox({
                     <span className="truncate">{option.label}</span>
                     <Check
                       aria-hidden="true"
-                      className={cn('ms-auto', isSelected ? 'opacity-100' : 'opacity-0')}
+                      className={cn(
+                        "ms-auto",
+                        isSelected ? "opacity-100" : "opacity-0",
+                      )}
                     />
                   </DsCommandItem>
                 );

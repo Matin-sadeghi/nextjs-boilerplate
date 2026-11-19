@@ -1,5 +1,5 @@
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "@/src/lib/utils"
+import { cn } from "@/src/lib/utils";
+import { cva, type VariantProps } from "class-variance-authority";
 
 function DsEmpty({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -7,11 +7,11 @@ function DsEmpty({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="empty"
       className={cn(
         "flex w-full min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-xl border-dashed p-6 text-center text-balance",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function DsEmptyHeader({ className, ...props }: React.ComponentProps<"div">) {
@@ -21,7 +21,7 @@ function DsEmptyHeader({ className, ...props }: React.ComponentProps<"div">) {
       className={cn("flex max-w-sm flex-col items-center gap-2", className)}
       {...props}
     />
-  )
+  );
 }
 
 const emptyMediaVariants = cva(
@@ -36,8 +36,8 @@ const emptyMediaVariants = cva(
     defaultVariants: {
       variant: "default",
     },
-  }
-)
+  },
+);
 
 function DsEmptyMedia({
   className,
@@ -51,7 +51,7 @@ function DsEmptyMedia({
       className={cn(emptyMediaVariants({ variant, className }))}
       {...props}
     />
-  )
+  );
 }
 
 function DsEmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
@@ -60,24 +60,27 @@ function DsEmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="empty-title"
       className={cn(
         "font-heading text-sm font-medium tracking-tight",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
-function DsEmptyDescription({ className, ...props }: React.ComponentProps<"p">) {
+function DsEmptyDescription({
+  className,
+  ...props
+}: React.ComponentProps<"p">) {
   return (
     <div
       data-slot="empty-description"
       className={cn(
         "text-sm/relaxed text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function DsEmptyContent({ className, ...props }: React.ComponentProps<"div">) {
@@ -86,18 +89,18 @@ function DsEmptyContent({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="empty-content"
       className={cn(
         "flex w-full max-w-sm min-w-0 flex-col items-center gap-2.5 text-sm text-balance",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 export {
   DsEmpty,
-  DsEmptyHeader,
-  DsEmptyTitle,
-  DsEmptyDescription,
   DsEmptyContent,
+  DsEmptyDescription,
+  DsEmptyHeader,
   DsEmptyMedia,
-}
+  DsEmptyTitle,
+};

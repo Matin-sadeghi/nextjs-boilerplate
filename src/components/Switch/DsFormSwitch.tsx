@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { DsFormField, type DsFormFieldBaseProps } from '../Form';
-import { DsSwitch } from './DsSwitch';
+import { DsFormField, type DsFormFieldBaseProps } from "../Form";
+import { DsSwitch } from "./DsSwitch";
 
 export interface DsFormSwitchProps extends DsFormFieldBaseProps {
-  size?: 'sm' | 'default';
+  size?: "sm" | "default";
 }
 
 export function DsFormSwitch({ size, ...fieldProps }: DsFormSwitchProps) {

@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import { AdminAuthGuard, AdminLayout } from "@/src/components";
+import type { Metadata } from "next";
 
 /**
  * Everything under /admin is rendered only after AdminAuthGuard loads the

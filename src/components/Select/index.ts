@@ -1,2 +1,2 @@
-export * from './DsSelect';
-export * from './DsFormSelect';
+export * from "./DsFormSelect";
+export * from "./DsSelect";

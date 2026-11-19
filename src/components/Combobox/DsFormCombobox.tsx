@@ -1,11 +1,22 @@
-'use client';
+"use client";
 
-import { DsFormField, type DsFormFieldBaseProps } from '../Form';
-import { DsCombobox, type DsComboboxProps } from './DsCombobox';
+import { DsFormField, type DsFormFieldBaseProps } from "../Form";
+import { DsCombobox, type DsComboboxProps } from "./DsCombobox";
 
 export interface DsFormComboboxProps
-  extends DsFormFieldBaseProps,
-    Omit<DsComboboxProps, 'value' | 'onValueChange' | 'id' | 'disabled' | 'className' | 'invalid' | 'ref' | 'onBlur'> {
+  extends
+    DsFormFieldBaseProps,
+    Omit<
+      DsComboboxProps,
+      | "value"
+      | "onValueChange"
+      | "id"
+      | "disabled"
+      | "className"
+      | "invalid"
+      | "ref"
+      | "onBlur"
+    > {
   triggerClassName?: string;
 }
 
@@ -20,7 +31,14 @@ export function DsFormCombobox({
   ...comboboxProps
 }: DsFormComboboxProps) {
   return (
-    <DsFormField name={name} label={label} description={description} id={id} disabled={disabled} className={className}>
+    <DsFormField
+      name={name}
+      label={label}
+      description={description}
+      id={id}
+      disabled={disabled}
+      className={className}
+    >
       {({ field, fieldState, controlProps }) => (
         <DsCombobox
           {...comboboxProps}

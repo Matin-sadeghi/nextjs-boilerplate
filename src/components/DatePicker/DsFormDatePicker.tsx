@@ -1,11 +1,22 @@
-'use client';
+"use client";
 
-import { DsFormField, type DsFormFieldBaseProps } from '../Form';
-import { DsDatePicker, type DsDatePickerProps } from './DsDatePicker';
+import { DsFormField, type DsFormFieldBaseProps } from "../Form";
+import { DsDatePicker, type DsDatePickerProps } from "./DsDatePicker";
 
 export interface DsFormDatePickerProps
-  extends DsFormFieldBaseProps,
-    Omit<DsDatePickerProps, 'value' | 'onValueChange' | 'id' | 'disabled' | 'className' | 'invalid' | 'ref' | 'onBlur'> {
+  extends
+    DsFormFieldBaseProps,
+    Omit<
+      DsDatePickerProps,
+      | "value"
+      | "onValueChange"
+      | "id"
+      | "disabled"
+      | "className"
+      | "invalid"
+      | "ref"
+      | "onBlur"
+    > {
   triggerClassName?: string;
 }
 
@@ -21,7 +32,14 @@ export function DsFormDatePicker({
   ...pickerProps
 }: DsFormDatePickerProps) {
   return (
-    <DsFormField name={name} label={label} description={description} id={id} disabled={disabled} className={className}>
+    <DsFormField
+      name={name}
+      label={label}
+      description={description}
+      id={id}
+      disabled={disabled}
+      className={className}
+    >
       {({ field, fieldState, controlProps }) => (
         <DsDatePicker
           {...pickerProps}

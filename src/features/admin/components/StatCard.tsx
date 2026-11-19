@@ -1,8 +1,8 @@
-import type { ComponentType, ReactNode } from 'react';
-import { TrendingDown, TrendingUp } from 'lucide-react';
+import type { ComponentType, ReactNode } from "react";
+import { TrendingDown, TrendingUp } from "lucide-react";
 
-import { DsBox, DsTypography } from '@/src/components';
-import { cn } from '@/src/lib/utils';
+import { DsBox, DsTypography } from "@/src/components";
+import { cn } from "@/src/lib/utils";
 
 export interface StatCardProps {
   label: string;
@@ -13,12 +13,23 @@ export interface StatCardProps {
   hint?: string;
 }
 
-export function StatCard({ label, value, icon: Icon, change, hint }: StatCardProps) {
+export function StatCard({
+  label,
+  value,
+  icon: Icon,
+  change,
+  hint,
+}: StatCardProps) {
   const positive = (change ?? 0) >= 0;
   const Trend = positive ? TrendingUp : TrendingDown;
 
   return (
-    <DsBox variant="card" padding="lg" shadow="sm" className="flex flex-col gap-4">
+    <DsBox
+      variant="card"
+      padding="lg"
+      shadow="sm"
+      className="flex flex-col gap-4"
+    >
       <div className="flex items-center justify-between gap-2">
         <DsTypography variant="helperText" as="span">
           {label}
@@ -28,13 +39,20 @@ export function StatCard({ label, value, icon: Icon, change, hint }: StatCardPro
         </span>
       </div>
       <div className="flex flex-col gap-1">
-        <span className="text-3xl font-semibold tracking-tight text-heading tabular-nums">{value}</span>
+        <span className="text-3xl font-semibold tracking-tight text-heading tabular-nums">
+          {value}
+        </span>
         {(change !== undefined || hint) && (
           <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
             {change !== undefined && (
-              <span className={cn('inline-flex items-center gap-0.5 font-medium', positive ? 'text-success' : 'text-destructive')}>
+              <span
+                className={cn(
+                  "inline-flex items-center gap-0.5 font-medium",
+                  positive ? "text-success" : "text-destructive",
+                )}
+              >
                 <Trend className="size-3.5" />
-                {positive ? '+' : ''}
+                {positive ? "+" : ""}
                 {change}%
               </span>
             )}

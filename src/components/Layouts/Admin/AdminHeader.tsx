@@ -1,11 +1,11 @@
-'use client';
-import { Fragment, useEffect, useState } from 'react';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { Bell, Moon, Search, Sun } from 'lucide-react';
+"use client";
+import { Bell, Moon, Search, Sun } from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { Fragment, useEffect, useState } from "react";
 
-import { NAV_SECTIONS, NOTIFICATION_COUNT } from '@/src/constants';
-import { useThemeStore } from '@/src/stores';
+import { NAV_SECTIONS, NOTIFICATION_COUNT } from "@/src/constants";
+import { useThemeStore } from "@/src/stores";
 import {
   DsBreadcrumb,
   DsBreadcrumbItem,
@@ -13,8 +13,8 @@ import {
   DsBreadcrumbList,
   DsBreadcrumbPage,
   DsBreadcrumbSeparator,
-} from '../../Breadcrumb';
-import { DsButton } from '../../Button';
+} from "../../Breadcrumb";
+import { DsButton } from "../../Button";
 import {
   DsCommand,
   DsCommandDialog,
@@ -24,7 +24,7 @@ import {
   DsCommandItem,
   DsCommandList,
   DsCommandSeparator,
-} from '../../Command';
+} from "../../Command";
 import {
   DsDropdownMenu,
   DsDropdownMenuContent,
@@ -32,11 +32,11 @@ import {
   DsDropdownMenuLabel,
   DsDropdownMenuSeparator,
   DsDropdownMenuTrigger,
-} from '../../DropdownMenu';
-import { DsSeparator } from '../../Separator';
-import { DsSidebarTrigger } from '../../Sidebar';
-import { DsTooltip, DsTooltipContent, DsTooltipTrigger } from '../../Tooltip';
-import { getBreadcrumbs } from './admin-nav';
+} from "../../DropdownMenu";
+import { DsSeparator } from "../../Separator";
+import { DsSidebarTrigger } from "../../Sidebar";
+import { DsTooltip, DsTooltipContent, DsTooltipTrigger } from "../../Tooltip";
+import { getBreadcrumbs } from "./admin-nav";
 
 /** ⌘K / Ctrl+K: jump to any page in the nav, or toggle the theme. */
 function AdminCommandMenu() {
@@ -46,13 +46,13 @@ function AdminCommandMenu() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key.toLowerCase() === 'k' && (event.metaKey || event.ctrlKey)) {
+      if (event.key.toLowerCase() === "k" && (event.metaKey || event.ctrlKey)) {
         event.preventDefault();
         setOpen((value) => !value);
       }
     };
-    document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
   }, []);
 
   const run = (action: () => void) => {
@@ -76,7 +76,12 @@ function AdminCommandMenu() {
         </kbd>
       </DsButton>
 
-      <DsCommandDialog open={open} onOpenChange={setOpen} title="Search" description="Jump to a page or run a command">
+      <DsCommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Search"
+        description="Jump to a page or run a command"
+      >
         <DsCommand>
           <DsCommandInput placeholder="Type a page or command…" />
           <DsCommandList>
@@ -84,7 +89,10 @@ function AdminCommandMenu() {
             {NAV_SECTIONS.map((section) => (
               <DsCommandGroup key={section.title} heading={section.title}>
                 {section.items.map((item) => (
-                  <DsCommandItem key={item.href} onSelect={() => run(() => router.push(item.href))}>
+                  <DsCommandItem
+                    key={item.href}
+                    onSelect={() => run(() => router.push(item.href))}
+                  >
                     <item.icon /> {item.name}
                   </DsCommandItem>
                 ))}
@@ -93,8 +101,8 @@ function AdminCommandMenu() {
             <DsCommandSeparator />
             <DsCommandGroup heading="Preferences">
               <DsCommandItem onSelect={() => run(toggleTheme)}>
-                {theme === 'dark' ? <Sun /> : <Moon />}
-                Switch to {theme === 'dark' ? 'light' : 'dark'} mode
+                {theme === "dark" ? <Sun /> : <Moon />}
+                Switch to {theme === "dark" ? "light" : "dark"} mode
               </DsCommandItem>
             </DsCommandGroup>
           </DsCommandList>
@@ -108,11 +116,16 @@ function AdminNotifications() {
   return (
     <DsDropdownMenu>
       <DsDropdownMenuTrigger asChild>
-        <DsButton variant="ghost" size="icon-sm" className="relative" aria-label={`Notifications (${NOTIFICATION_COUNT})`}>
+        <DsButton
+          variant="ghost"
+          size="icon-sm"
+          className="relative"
+          aria-label={`Notifications (${NOTIFICATION_COUNT})`}
+        >
           <Bell />
           {NOTIFICATION_COUNT > 0 && (
             <span className="absolute -end-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-destructive-foreground">
-              {NOTIFICATION_COUNT > 9 ? '9+' : NOTIFICATION_COUNT}
+              {NOTIFICATION_COUNT > 9 ? "9+" : NOTIFICATION_COUNT}
             </span>
           )}
         </DsButton>
@@ -121,8 +134,15 @@ function AdminNotifications() {
         <DsDropdownMenuLabel>Notifications</DsDropdownMenuLabel>
         <DsDropdownMenuSeparator />
         {/* Replace with real notifications from the API. */}
-        {['New user signed up', 'Weekly report is ready', 'Password changed'].map((text) => (
-          <DsDropdownMenuItem key={text} className="flex-col items-start gap-0.5">
+        {[
+          "New user signed up",
+          "Weekly report is ready",
+          "Password changed",
+        ].map((text) => (
+          <DsDropdownMenuItem
+            key={text}
+            className="flex-col items-start gap-0.5"
+          >
             <span>{text}</span>
             <span className="text-xs text-muted-foreground">Just now</span>
           </DsDropdownMenuItem>
@@ -165,8 +185,13 @@ export function AdminHeader() {
         <AdminCommandMenu />
         <DsTooltip>
           <DsTooltipTrigger asChild>
-            <DsButton variant="ghost" size="icon-sm" onClick={toggleTheme} aria-label="Toggle theme">
-              {theme === 'dark' ? <Sun /> : <Moon />}
+            <DsButton
+              variant="ghost"
+              size="icon-sm"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+            >
+              {theme === "dark" ? <Sun /> : <Moon />}
             </DsButton>
           </DsTooltipTrigger>
           <DsTooltipContent>Toggle theme</DsTooltipContent>

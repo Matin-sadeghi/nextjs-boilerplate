@@ -1,1 +1,1 @@
-export * from './DsAccordion';
+export * from "./DsAccordion";

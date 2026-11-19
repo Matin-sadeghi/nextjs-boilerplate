@@ -1,8 +1,5 @@
 "use client";
 
-import { Suspense, use, useEffect, useState, type ReactNode } from "react";
-import { io } from "next/cache";
-import Link from "next/link";
 import {
   Bell,
   CalendarIcon,
@@ -22,8 +19,11 @@ import {
   User as UserIcon,
   Users,
 } from "lucide-react";
-import { toast } from "sonner";
+import { io } from "next/cache";
+import Link from "next/link";
+import { Suspense, use, useEffect, useState, type ReactNode } from "react";
 import type { DateRange } from "react-day-picker";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import {
@@ -60,7 +60,6 @@ import {
   DsCalendar,
   DsCheckbox,
   DsCombobox,
-  type DsComboboxOption,
   DsCommand,
   DsCommandDialog,
   DsCommandEmpty,
@@ -164,6 +163,7 @@ import {
   DsTooltipContent,
   DsTooltipTrigger,
   DsTypography,
+  type DsComboboxOption,
   type DsTypographyColor,
 } from "@/src/components";
 import { useAppForm } from "@/src/hooks";
@@ -272,8 +272,16 @@ const roleOptions = [
 
 const planOptions = [
   { value: "free", label: "Free", description: "Up to 3 projects." },
-  { value: "pro", label: "Pro", description: "Unlimited projects and priority support." },
-  { value: "team", label: "Team", description: "Everything in Pro, plus shared workspaces." },
+  {
+    value: "pro",
+    label: "Pro",
+    description: "Unlimited projects and priority support.",
+  },
+  {
+    value: "team",
+    label: "Team",
+    description: "Everything in Pro, plus shared workspaces.",
+  },
 ];
 
 const birthdayStartMonth = new Date(1940, 0);
@@ -450,14 +458,22 @@ const chartTokens = [
   "bg-chart-8",
 ];
 
-const ColorScale = ({ label, scale }: { label: string; scale: readonly (readonly [string, string])[] }) => (
+const ColorScale = ({
+  label,
+  scale,
+}: {
+  label: string;
+  scale: readonly (readonly [string, string])[];
+}) => (
   <div className="flex flex-col gap-2">
     <DsTypography variant="caption">{label}</DsTypography>
     <div className="grid grid-cols-6 overflow-hidden rounded-xl border border-border sm:grid-cols-12">
       {scale.map(([step, className]) => (
         <div key={step} className="flex flex-col">
           <div className={cn("h-12", className)} />
-          <span className="bg-card py-1 text-center font-mono text-[10px] text-muted-foreground">{step}</span>
+          <span className="bg-card py-1 text-center font-mono text-[10px] text-muted-foreground">
+            {step}
+          </span>
         </div>
       ))}
     </div>
@@ -642,7 +658,8 @@ export default function UiKitPage() {
         title="UI kit"
         description={
           <>
-            Every component in <code className="font-mono">src/components</code>, in one place.
+            Every component in <code className="font-mono">src/components</code>
+            , in one place.
           </>
         }
         breadcrumb={
@@ -699,8 +716,15 @@ export default function UiKitPage() {
           <div className="grid w-full grid-cols-2 gap-3 sm:grid-cols-4">
             {surfaceTokens.map((token) => (
               <div key={token.name} className="flex flex-col gap-1.5">
-                <div className={cn("h-14 rounded-lg border border-border", token.className)} />
-                <span className="font-mono text-xs text-muted-foreground">{token.name}</span>
+                <div
+                  className={cn(
+                    "h-14 rounded-lg border border-border",
+                    token.className,
+                  )}
+                />
+                <span className="font-mono text-xs text-muted-foreground">
+                  {token.name}
+                </span>
               </div>
             ))}
           </div>
@@ -709,7 +733,10 @@ export default function UiKitPage() {
         <Row label="Text">
           <div className="flex w-full flex-wrap gap-x-6 gap-y-2">
             {textTokens.map((token) => (
-              <span key={token.name} className={cn("text-sm font-medium", token.className)}>
+              <span
+                key={token.name}
+                className={cn("text-sm font-medium", token.className)}
+              >
                 {token.name}
               </span>
             ))}
@@ -719,11 +746,24 @@ export default function UiKitPage() {
         <Row label="Intents · solid / soft">
           <div className="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {intentTokens.map((token) => (
-              <div key={token.name} className="overflow-hidden rounded-xl border border-border">
-                <div className={cn("flex h-12 items-center px-3 text-sm font-medium", token.solid)}>
+              <div
+                key={token.name}
+                className="overflow-hidden rounded-xl border border-border"
+              >
+                <div
+                  className={cn(
+                    "flex h-12 items-center px-3 text-sm font-medium",
+                    token.solid,
+                  )}
+                >
                   {token.name}
                 </div>
-                <div className={cn("flex h-12 items-center border-t px-3 text-sm font-medium", token.soft)}>
+                <div
+                  className={cn(
+                    "flex h-12 items-center border-t px-3 text-sm font-medium",
+                    token.soft,
+                  )}
+                >
                   {token.name}-soft
                 </div>
               </div>
@@ -893,7 +933,11 @@ export default function UiKitPage() {
       </Section>
 
       {/* Avatar */}
-      <Section id="avatar" title="DsAvatar" description="Image with fallback initials, sizes, status badge and stacked groups.">
+      <Section
+        id="avatar"
+        title="DsAvatar"
+        description="Image with fallback initials, sizes, status badge and stacked groups."
+      >
         <Row label="size · fallback">
           <DsAvatar size="sm">
             <DsAvatarImage src="https://github.com/shadcn.png" alt="shadcn" />
@@ -1040,7 +1084,11 @@ export default function UiKitPage() {
           <div className="flex flex-col gap-4">
             <DsTypography variant="caption">DsSwitch</DsTypography>
             <div className="flex items-center gap-3">
-              <DsSwitch id="kit-notifications" checked={notifications} onCheckedChange={setNotifications} />
+              <DsSwitch
+                id="kit-notifications"
+                checked={notifications}
+                onCheckedChange={setNotifications}
+              />
               <DsLabel htmlFor="kit-notifications">Email notifications</DsLabel>
             </div>
             <div className="flex items-center gap-3">
@@ -1055,7 +1103,11 @@ export default function UiKitPage() {
 
           <div className="flex flex-col gap-4">
             <DsTypography variant="caption">DsRadioGroup</DsTypography>
-            <DsRadioGroup value={plan} onValueChange={setPlan} aria-label="Plan">
+            <DsRadioGroup
+              value={plan}
+              onValueChange={setPlan}
+              aria-label="Plan"
+            >
               {[
                 ["free", "Free"],
                 ["pro", "Pro"],
@@ -1067,14 +1119,22 @@ export default function UiKitPage() {
                 </div>
               ))}
               <div className="flex items-center gap-3">
-                <DsRadioGroupItem value="enterprise" id="kit-plan-enterprise" disabled />
-                <DsLabel htmlFor="kit-plan-enterprise">Enterprise (disabled)</DsLabel>
+                <DsRadioGroupItem
+                  value="enterprise"
+                  id="kit-plan-enterprise"
+                  disabled
+                />
+                <DsLabel htmlFor="kit-plan-enterprise">
+                  Enterprise (disabled)
+                </DsLabel>
               </div>
             </DsRadioGroup>
           </div>
 
           <div className="flex flex-col gap-4">
-            <DsTypography variant="caption">DsCombobox (searchable select)</DsTypography>
+            <DsTypography variant="caption">
+              DsCombobox (searchable select)
+            </DsTypography>
             <DsField>
               <DsLabel htmlFor="kit-framework">Framework</DsLabel>
               <DsCombobox
@@ -1089,7 +1149,11 @@ export default function UiKitPage() {
             </DsField>
             <DsField>
               <DsLabel htmlFor="kit-framework-invalid">Invalid</DsLabel>
-              <DsCombobox id="kit-framework-invalid" options={frameworks} invalid />
+              <DsCombobox
+                id="kit-framework-invalid"
+                options={frameworks}
+                invalid
+              />
             </DsField>
           </div>
         </div>
@@ -1101,8 +1165,17 @@ export default function UiKitPage() {
         title="DsForm + DsForm* fields"
         description="One zod schema drives every field. Submit empty to see all errors; the first invalid field gets focus."
       >
-        <DsForm form={form} onSubmit={onSubmit} className="grid gap-5 sm:grid-cols-2">
-          <DsFormInput name="fullName" label="Full name" placeholder="Ada Lovelace" startIcon={<UserIcon />} />
+        <DsForm
+          form={form}
+          onSubmit={onSubmit}
+          className="grid gap-5 sm:grid-cols-2"
+        >
+          <DsFormInput
+            name="fullName"
+            label="Full name"
+            placeholder="Ada Lovelace"
+            startIcon={<UserIcon />}
+          />
           <DsFormInput
             name="email"
             type="email"
@@ -1110,7 +1183,12 @@ export default function UiKitPage() {
             placeholder="ada@example.com"
             description="Used for notifications."
           />
-          <DsFormSelect name="role" label="Role" placeholder="Select a role" options={roleOptions} />
+          <DsFormSelect
+            name="role"
+            label="Role"
+            placeholder="Select a role"
+            options={roleOptions}
+          />
           <DsFormCombobox
             name="framework"
             label="Framework"
@@ -1140,7 +1218,10 @@ export default function UiKitPage() {
               label="Product newsletter"
               description="One email a month, unsubscribe anytime."
             />
-            <DsFormCheckbox name="terms" label="I accept the terms and conditions" />
+            <DsFormCheckbox
+              name="terms"
+              label="I accept the terms and conditions"
+            />
           </div>
           <div className="flex gap-2 sm:col-span-2">
             <DsButton type="submit" loading={saving}>
@@ -1318,11 +1399,15 @@ export default function UiKitPage() {
             <DsAlertDialogContent>
               <DsAlertDialogHeader>
                 <DsAlertDialogTitle>Publish changes?</DsAlertDialogTitle>
-                <DsAlertDialogDescription>Your changes will be visible to everyone.</DsAlertDialogDescription>
+                <DsAlertDialogDescription>
+                  Your changes will be visible to everyone.
+                </DsAlertDialogDescription>
               </DsAlertDialogHeader>
               <DsAlertDialogFooter>
                 <DsAlertDialogCancel>Cancel</DsAlertDialogCancel>
-                <DsAlertDialogAction onClick={() => toast.success("Published")}>Publish</DsAlertDialogAction>
+                <DsAlertDialogAction onClick={() => toast.success("Published")}>
+                  Publish
+                </DsAlertDialogAction>
               </DsAlertDialogFooter>
             </DsAlertDialogContent>
           </DsAlertDialog>
@@ -1339,11 +1424,16 @@ export default function UiKitPage() {
                   <TriangleAlert />
                 </DsAlertDialogMedia>
                 <DsAlertDialogTitle>Delete this project?</DsAlertDialogTitle>
-                <DsAlertDialogDescription>This can’t be undone.</DsAlertDialogDescription>
+                <DsAlertDialogDescription>
+                  This can’t be undone.
+                </DsAlertDialogDescription>
               </DsAlertDialogHeader>
               <DsAlertDialogFooter>
                 <DsAlertDialogCancel>Cancel</DsAlertDialogCancel>
-                <DsAlertDialogAction variant="danger" onClick={() => toast.error("Project deleted")}>
+                <DsAlertDialogAction
+                  variant="danger"
+                  onClick={() => toast.error("Project deleted")}
+                >
                   Delete
                 </DsAlertDialogAction>
               </DsAlertDialogFooter>
@@ -1362,25 +1452,40 @@ export default function UiKitPage() {
               <DsSheetContent side={side}>
                 <DsSheetHeader>
                   <DsSheetTitle>Filters</DsSheetTitle>
-                  <DsSheetDescription>Narrow down the results.</DsSheetDescription>
+                  <DsSheetDescription>
+                    Narrow down the results.
+                  </DsSheetDescription>
                 </DsSheetHeader>
                 <div className="flex flex-col gap-4 px-4">
                   <DsField>
                     <DsLabel htmlFor={`sheet-search-${side}`}>Keyword</DsLabel>
-                    <DsInput id={`sheet-search-${side}`} placeholder="Search…" startIcon={<Search />} />
+                    <DsInput
+                      id={`sheet-search-${side}`}
+                      placeholder="Search…"
+                      startIcon={<Search />}
+                    />
                   </DsField>
                   <DsField>
-                    <DsLabel htmlFor={`sheet-framework-${side}`}>Framework</DsLabel>
-                    <DsCombobox id={`sheet-framework-${side}`} options={frameworks} />
+                    <DsLabel htmlFor={`sheet-framework-${side}`}>
+                      Framework
+                    </DsLabel>
+                    <DsCombobox
+                      id={`sheet-framework-${side}`}
+                      options={frameworks}
+                    />
                   </DsField>
                   <div className="flex items-center gap-3">
                     <DsSwitch id={`sheet-active-${side}`} defaultChecked />
-                    <DsLabel htmlFor={`sheet-active-${side}`}>Active only</DsLabel>
+                    <DsLabel htmlFor={`sheet-active-${side}`}>
+                      Active only
+                    </DsLabel>
                   </div>
                 </div>
                 <DsSheetFooter>
                   <DsSheetClose asChild>
-                    <DsButton onClick={() => toast("Filters applied")}>Apply</DsButton>
+                    <DsButton onClick={() => toast("Filters applied")}>
+                      Apply
+                    </DsButton>
                   </DsSheetClose>
                   <DsSheetClose asChild>
                     <DsButton variant="outline">Cancel</DsButton>
@@ -1410,7 +1515,8 @@ export default function UiKitPage() {
                   <UserIcon /> Profile <DsCommandShortcut>⌘P</DsCommandShortcut>
                 </DsCommandItem>
                 <DsCommandItem>
-                  <Settings /> Settings <DsCommandShortcut>⌘S</DsCommandShortcut>
+                  <Settings /> Settings{" "}
+                  <DsCommandShortcut>⌘S</DsCommandShortcut>
                 </DsCommandItem>
               </DsCommandGroup>
             </DsCommandList>
@@ -1421,7 +1527,9 @@ export default function UiKitPage() {
           <DsButton variant="outline" onClick={() => setCommandOpen(true)}>
             <Search /> Open command palette
           </DsButton>
-          <DsTypography variant="caption">or press Ctrl+K / ⌘K anywhere on this page</DsTypography>
+          <DsTypography variant="caption">
+            or press Ctrl+K / ⌘K anywhere on this page
+          </DsTypography>
         </Row>
         <DsCommandDialog open={commandOpen} onOpenChange={setCommandOpen}>
           <DsCommand>
@@ -1434,7 +1542,9 @@ export default function UiKitPage() {
                     key={id}
                     onSelect={() => {
                       setCommandOpen(false);
-                      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                      document
+                        .getElementById(id)
+                        ?.scrollIntoView({ behavior: "smooth" });
                     }}
                   >
                     {label}
@@ -1458,7 +1568,11 @@ export default function UiKitPage() {
       </Section>
 
       {/* Empty */}
-      <Section id="empty" title="DsEmpty" description="Empty states for lists, searches and first-run screens.">
+      <Section
+        id="empty"
+        title="DsEmpty"
+        description="Empty states for lists, searches and first-run screens."
+      >
         <div className="grid gap-4 md:grid-cols-2">
           <DsEmpty className="border border-dashed border-border">
             <DsEmptyHeader>
@@ -1466,7 +1580,9 @@ export default function UiKitPage() {
                 <FolderOpen />
               </DsEmptyMedia>
               <DsEmptyTitle>No projects yet</DsEmptyTitle>
-              <DsEmptyDescription>Create your first project to get started.</DsEmptyDescription>
+              <DsEmptyDescription>
+                Create your first project to get started.
+              </DsEmptyDescription>
             </DsEmptyHeader>
             <DsEmptyContent>
               <DsButton onClick={() => toast("Create project")}>
@@ -1487,7 +1603,9 @@ export default function UiKitPage() {
                 </DsAvatarGroup>
               </DsEmptyMedia>
               <DsEmptyTitle>No team members</DsEmptyTitle>
-              <DsEmptyDescription>Invite people to collaborate on this workspace.</DsEmptyDescription>
+              <DsEmptyDescription>
+                Invite people to collaborate on this workspace.
+              </DsEmptyDescription>
             </DsEmptyHeader>
             <DsEmptyContent>
               <DsButton variant="outline" onClick={() => toast("Invite sent")}>

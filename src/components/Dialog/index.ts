@@ -1,1 +1,1 @@
-export * from './DsDialog';
+export * from "./DsDialog";

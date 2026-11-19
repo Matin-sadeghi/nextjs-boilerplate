@@ -1,1 +1,1 @@
-export * from './DsTypography';
+export * from "./DsTypography";

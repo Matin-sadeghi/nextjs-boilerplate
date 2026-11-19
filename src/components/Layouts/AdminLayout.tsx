@@ -1,9 +1,9 @@
-'use client';
-import type { ReactNode } from 'react';
+"use client";
+import type { ReactNode } from "react";
 
-import { DsSidebarInset, DsSidebarProvider } from '../Sidebar';
-import { AdminHeader } from './Admin/AdminHeader';
-import { AdminSidebar } from './Admin/AdminSidebar';
+import { DsSidebarInset, DsSidebarProvider } from "../Sidebar";
+import { AdminHeader } from "./Admin/AdminHeader";
+import { AdminSidebar } from "./Admin/AdminSidebar";
 
 /**
  * Admin shell: collapsible sidebar (Ctrl+B, icon mode on desktop, drawer on
@@ -16,7 +16,9 @@ export const AdminLayout = ({ children }: { children: ReactNode }) => {
       <AdminSidebar />
       <DsSidebarInset>
         <AdminHeader />
-        <main className="flex flex-1 flex-col gap-6 p-4 md:p-6">{children}</main>
+        <main className="flex flex-1 flex-col gap-6 p-4 md:p-6">
+          {children}
+        </main>
       </DsSidebarInset>
     </DsSidebarProvider>
   );

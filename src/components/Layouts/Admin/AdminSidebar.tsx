@@ -1,6 +1,4 @@
 "use client";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
   ChevronsUpDown,
   LogOut,
@@ -9,6 +7,8 @@ import {
   Sun,
   UserRound,
 } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { APP_NAME, NAV_SECTIONS, USER_NAVIGATION } from "@/src/constants";
 import { useCurrentUser, useLogout } from "@/src/features/auth/hooks";

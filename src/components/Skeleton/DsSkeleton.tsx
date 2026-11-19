@@ -1,4 +1,4 @@
-import { cn } from "cn"
+import { cn } from "cn";
 
 function DsSkeleton({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -7,7 +7,7 @@ function DsSkeleton({ className, ...props }: React.ComponentProps<"div">) {
       className={cn("animate-pulse rounded-md bg-muted", className)}
       {...props}
     />
-  )
+  );
 }
 
-export { DsSkeleton }
+export { DsSkeleton };

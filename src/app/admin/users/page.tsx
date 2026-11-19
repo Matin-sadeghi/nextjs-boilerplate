@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import { UsersManagement } from "@/src/features/admin";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Users" };
 

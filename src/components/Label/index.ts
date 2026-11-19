@@ -1,1 +1,1 @@
-export * from './DsLabel';
+export * from "./DsLabel";

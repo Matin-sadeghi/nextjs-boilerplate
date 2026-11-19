@@ -1,11 +1,21 @@
-'use client';
+"use client";
 
-import { DsFormField, type DsFormFieldBaseProps } from '../Form';
-import { DsInput, type DsInputProps } from './DsInput';
+import { DsFormField, type DsFormFieldBaseProps } from "../Form";
+import { DsInput, type DsInputProps } from "./DsInput";
 
 export interface DsFormInputProps
-  extends DsFormFieldBaseProps,
-    Omit<DsInputProps, 'name' | 'id' | 'disabled' | 'className' | 'value' | 'defaultValue' | 'invalid'> {
+  extends
+    DsFormFieldBaseProps,
+    Omit<
+      DsInputProps,
+      | "name"
+      | "id"
+      | "disabled"
+      | "className"
+      | "value"
+      | "defaultValue"
+      | "invalid"
+    > {
   inputClassName?: string;
 }
 
@@ -24,14 +34,21 @@ export const DsFormInput = ({
   ...inputProps
 }: DsFormInputProps) => {
   return (
-    <DsFormField name={name} label={label} description={description} id={id} disabled={disabled} className={className}>
+    <DsFormField
+      name={name}
+      label={label}
+      description={description}
+      id={id}
+      disabled={disabled}
+      className={className}
+    >
       {({ field, fieldState, controlProps }) => (
         <DsInput
           {...inputProps}
           {...controlProps}
           ref={field.ref}
           name={field.name}
-          value={field.value ?? ''}
+          value={field.value ?? ""}
           onChange={field.onChange}
           onBlur={field.onBlur}
           disabled={field.disabled}

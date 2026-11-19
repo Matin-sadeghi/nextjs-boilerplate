@@ -1,17 +1,17 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-export type ThemeMode = 'dark' | 'light';
+export type ThemeMode = "dark" | "light";
 
 const getDomTheme = (): ThemeMode => {
-  if (typeof document === 'undefined') return 'light';
-  return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+  if (typeof document === "undefined") return "light";
+  return document.documentElement.classList.contains("dark") ? "dark" : "light";
 };
 
 const applyTheme = (theme: ThemeMode) => {
-  if (typeof document === 'undefined') return;
+  if (typeof document === "undefined") return;
   const root = document.documentElement;
-  theme === 'dark' ? root.classList.add('dark') : root.classList.remove('dark');
+  theme === "dark" ? root.classList.add("dark") : root.classList.remove("dark");
 };
 
 export const useThemeStore = create<{
@@ -21,20 +21,20 @@ export const useThemeStore = create<{
 }>()(
   persist(
     (set, get) => ({
-      theme: 'light',
+      theme: "light",
       applyTheme: (theme) => {
         applyTheme(theme);
         set({ theme });
       },
 
       toggleTheme: () => {
-        const newTheme = get().theme === 'dark' ? 'light' : 'dark';
+        const newTheme = get().theme === "dark" ? "light" : "dark";
         applyTheme(newTheme);
         set({ theme: newTheme });
       },
     }),
     {
-      name: 'theme-storage-v1',
+      name: "theme-storage-v1",
       skipHydration: true,
       onRehydrateStorage: () => (state) => {
         applyTheme(state?.theme ?? getDomTheme());

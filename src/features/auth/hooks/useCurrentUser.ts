@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useQuery } from '@tanstack/react-query';
-import { isApiUnauthorizedError } from '@/src/api/api-error';
-import { currentUserApi } from '../api';
-import { authKeys } from './auth.query-name';
+import { useQuery } from "@tanstack/react-query";
+import { isApiUnauthorizedError } from "@/src/api/api-error";
+import { currentUserApi } from "../api";
+import { authKeys } from "./auth.query-name";
 
 export const useCurrentUser = () => {
   const query = useQuery({
@@ -12,7 +12,7 @@ export const useCurrentUser = () => {
       const response = await currentUserApi();
 
       if (!response.data) {
-        throw new Error('The current-user response did not include user data.');
+        throw new Error("The current-user response did not include user data.");
       }
 
       return response.data;

@@ -1,2 +1,2 @@
-export * from './DsSwitch';
-export * from './DsFormSwitch';
+export * from "./DsFormSwitch";
+export * from "./DsSwitch";

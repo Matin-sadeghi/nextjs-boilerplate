@@ -1,4 +1,4 @@
 export const healthKeys = {
-  all: ['health'] as const,
-  status: () => [...healthKeys.all, 'status'] as const,
+  all: ["health"] as const,
+  status: () => [...healthKeys.all, "status"] as const,
 };

@@ -1,1 +1,1 @@
-export * from './DsAlertDialog';
+export * from "./DsAlertDialog";

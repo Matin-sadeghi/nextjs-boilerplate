@@ -18,8 +18,18 @@ export const LoginForm = () => {
       <DsTypography variant="h3" as="h1">
         Sign in to your account
       </DsTypography>
-      <DsFormInput type="email" name="email" label="Email" autoComplete="email" />
-      <DsFormInput type="password" name="password" label="Password" autoComplete="current-password" />
+      <DsFormInput
+        type="email"
+        name="email"
+        label="Email"
+        autoComplete="email"
+      />
+      <DsFormInput
+        type="password"
+        name="password"
+        label="Password"
+        autoComplete="current-password"
+      />
       <DsTypography variant="helperText">
         <Link href="/forgot-password" className="hover:text-primary">
           Forgot password?

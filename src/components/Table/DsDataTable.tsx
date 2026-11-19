@@ -1,16 +1,31 @@
-'use client';
-import { useState, type ReactNode } from 'react';
+"use client";
 import {
   useTable,
   type OnChangeFn,
   type PaginationState,
   type RowData,
   type SortingState,
-} from '@tanstack/react-table';
-import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+} from "@tanstack/react-table";
+import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from "lucide-react";
+import { useState, type ReactNode } from "react";
 
-import { DsSelect, DsSelectContent, DsSelectItem, DsSelectTrigger, DsSelectValue } from '../Select';
-import { DsSkeleton } from '../Skeleton';
+import { cn } from "@/src/lib/utils";
+import {
+  DsSelect,
+  DsSelectContent,
+  DsSelectItem,
+  DsSelectTrigger,
+  DsSelectValue,
+} from "../Select";
+import { DsSkeleton } from "../Skeleton";
 import {
   DsTable,
   DsTableBody,
@@ -18,11 +33,14 @@ import {
   DsTableHead,
   DsTableHeader,
   DsTableRow,
-} from './DsTable';
-import { cn } from '@/src/lib/utils';
+} from "./DsTable";
 
-import { DsButton } from '../Button';
-import { dsTableFeatures, type DsColumnDef, type DsColumnMeta } from './dsTable.config';
+import { DsButton } from "../Button";
+import {
+  dsTableFeatures,
+  type DsColumnDef,
+  type DsColumnMeta,
+} from "./dsTable.config";
 
 export interface DsDataTableLabels {
   empty: ReactNode;
@@ -35,13 +53,13 @@ export interface DsDataTableLabels {
 }
 
 const defaultLabels: DsDataTableLabels = {
-  empty: 'No results.',
-  rowsPerPage: 'Rows per page',
+  empty: "No results.",
+  rowsPerPage: "Rows per page",
   pageOf: (page, pageCount) => `Page ${page} of ${pageCount}`,
-  firstPage: 'First page',
-  previousPage: 'Previous page',
-  nextPage: 'Next page',
-  lastPage: 'Last page',
+  firstPage: "First page",
+  previousPage: "Previous page",
+  nextPage: "Next page",
+  lastPage: "Last page",
 };
 
 export interface DsDataTableProps<TData extends RowData> {
@@ -78,10 +96,10 @@ export interface DsDataTableProps<TData extends RowData> {
   className?: string;
 }
 
-const alignClasses: Record<NonNullable<DsColumnMeta['align']>, string> = {
-  start: 'text-start',
-  center: 'text-center',
-  end: 'text-end',
+const alignClasses: Record<NonNullable<DsColumnMeta["align"]>, string> = {
+  start: "text-start",
+  center: "text-center",
+  end: "text-end",
 };
 
 const emptyRows: never[] = [];
@@ -135,26 +153,39 @@ export function DsDataTable<TData extends RowData>({
   const pageCount = Math.max(table.getPageCount(), 1);
 
   return (
-    <div className={cn('flex flex-col gap-3', className)}>
+    <div className={cn("flex flex-col gap-3", className)}>
       <div className="overflow-hidden rounded-xl border border-border bg-card">
         <DsTable>
           <DsTableHeader className="bg-muted">
             {table.getHeaderGroups().map((headerGroup) => (
               <DsTableRow key={headerGroup.id} className="hover:bg-transparent">
                 {headerGroup.headers.map((header) => {
-                  const meta = header.column.columnDef.meta as DsColumnMeta | undefined;
+                  const meta = header.column.columnDef.meta as
+                    | DsColumnMeta
+                    | undefined;
                   const canSort = header.column.getCanSort();
                   const sorted = header.column.getIsSorted();
-                  const SortIcon = sorted === 'asc' ? ArrowUp : sorted === 'desc' ? ArrowDown : ArrowUpDown;
+                  const SortIcon =
+                    sorted === "asc"
+                      ? ArrowUp
+                      : sorted === "desc"
+                        ? ArrowDown
+                        : ArrowUpDown;
 
                   return (
                     <DsTableHead
                       key={header.id}
                       colSpan={header.colSpan}
-                      aria-sort={sorted === 'asc' ? 'ascending' : sorted === 'desc' ? 'descending' : undefined}
+                      aria-sort={
+                        sorted === "asc"
+                          ? "ascending"
+                          : sorted === "desc"
+                            ? "descending"
+                            : undefined
+                      }
                       className={cn(
-                        'h-11 px-4 text-xs font-semibold text-foreground-secondary',
-                        alignClasses[meta?.align ?? 'start'],
+                        "h-11 px-4 text-xs font-semibold text-foreground-secondary",
+                        alignClasses[meta?.align ?? "start"],
                         meta?.headerClassName,
                       )}
                     >
@@ -163,12 +194,15 @@ export function DsDataTable<TData extends RowData>({
                           type="button"
                           onClick={header.column.getToggleSortingHandler()}
                           className={cn(
-                            'inline-flex cursor-pointer items-center gap-1.5 rounded-sm outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50',
-                            sorted && 'text-foreground',
+                            "inline-flex cursor-pointer items-center gap-1.5 rounded-sm outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50",
+                            sorted && "text-foreground",
                           )}
                         >
                           <table.FlexRender header={header} />
-                          <SortIcon aria-hidden="true" className={cn('size-3.5', !sorted && 'opacity-40')} />
+                          <SortIcon
+                            aria-hidden="true"
+                            className={cn("size-3.5", !sorted && "opacity-40")}
+                          />
                         </button>
                       ) : (
                         <table.FlexRender header={header} />
@@ -180,20 +214,33 @@ export function DsDataTable<TData extends RowData>({
             ))}
           </DsTableHeader>
 
-          <DsTableBody className={cn(loading && !showSkeleton && 'opacity-60 transition-opacity')}>
+          <DsTableBody
+            className={cn(
+              loading && !showSkeleton && "opacity-60 transition-opacity",
+            )}
+          >
             {showSkeleton ? (
-              Array.from({ length: Math.min(pagination.pageSize, 5) }, (_, i) => (
-                <DsTableRow key={`skeleton-${i}`} className="hover:bg-transparent">
-                  {Array.from({ length: columnCount }, (_, j) => (
-                    <DsTableCell key={j} className="px-4 py-3">
-                      <DsSkeleton className="h-4 w-full max-w-40" />
-                    </DsTableCell>
-                  ))}
-                </DsTableRow>
-              ))
+              Array.from(
+                { length: Math.min(pagination.pageSize, 5) },
+                (_, i) => (
+                  <DsTableRow
+                    key={`skeleton-${i}`}
+                    className="hover:bg-transparent"
+                  >
+                    {Array.from({ length: columnCount }, (_, j) => (
+                      <DsTableCell key={j} className="px-4 py-3">
+                        <DsSkeleton className="h-4 w-full max-w-40" />
+                      </DsTableCell>
+                    ))}
+                  </DsTableRow>
+                ),
+              )
             ) : rows.length === 0 ? (
               <DsTableRow className="hover:bg-transparent">
-                <DsTableCell colSpan={columnCount} className="h-28 text-center text-muted-foreground">
+                <DsTableCell
+                  colSpan={columnCount}
+                  className="h-28 text-center text-muted-foreground"
+                >
                   {labels.empty}
                 </DsTableCell>
               </DsTableRow>
@@ -201,17 +248,21 @@ export function DsDataTable<TData extends RowData>({
               rows.map((row) => (
                 <DsTableRow
                   key={row.id}
-                  onClick={onRowClick ? () => onRowClick(row.original) : undefined}
-                  className={cn(onRowClick && 'cursor-pointer')}
+                  onClick={
+                    onRowClick ? () => onRowClick(row.original) : undefined
+                  }
+                  className={cn(onRowClick && "cursor-pointer")}
                 >
                   {row.getAllCells().map((cell) => {
-                    const meta = cell.column.columnDef.meta as DsColumnMeta | undefined;
+                    const meta = cell.column.columnDef.meta as
+                      | DsColumnMeta
+                      | undefined;
                     return (
                       <DsTableCell
                         key={cell.id}
                         className={cn(
-                          'px-4 py-3 text-foreground',
-                          alignClasses[meta?.align ?? 'start'],
+                          "px-4 py-3 text-foreground",
+                          alignClasses[meta?.align ?? "start"],
                           meta?.cellClassName,
                         )}
                       >

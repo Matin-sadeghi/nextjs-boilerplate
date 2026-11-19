@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useQueryErrorResetBoundary } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useQueryErrorResetBoundary } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 type ErrorPageProps = {
   error: Error & { digest?: string };
@@ -19,7 +19,7 @@ export default function ErrorPage({ error, retry }: ErrorPageProps) {
 
   useEffect(() => {
     // TODO: Send error to monitoring service.
-    console.error('Application error:', error);
+    console.error("Application error:", error);
   }, [error]);
 
   return (
@@ -41,12 +41,17 @@ export default function ErrorPage({ error, retry }: ErrorPageProps) {
         </svg>
       </div>
 
-      <p className="mt-6 text-sm font-medium text-red-600 dark:text-red-400">Unexpected Error</p>
+      <p className="mt-6 text-sm font-medium text-red-600 dark:text-red-400">
+        Unexpected Error
+      </p>
 
-      <h1 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">Something went wrong!</h1>
+      <h1 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
+        Something went wrong!
+      </h1>
 
       <p className="mt-3 max-w-md text-sm leading-7 text-gray-600 dark:text-gray-400 sm:text-base">
-        We encountered an unexpected problem while processing your request. Please try again.
+        We encountered an unexpected problem while processing your request.
+        Please try again.
       </p>
 
       {error.digest && (

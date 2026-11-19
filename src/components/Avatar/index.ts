@@ -1,1 +1,1 @@
-export * from './DsAvatar';
+export * from "./DsAvatar";

@@ -1,8 +1,14 @@
-'use client';
-import type { ReactNode } from 'react';
+"use client";
+import type { ReactNode } from "react";
 
-import { DsFormField, type DsFormFieldBaseProps } from '../Form';
-import { DsSelect, DsSelectContent, DsSelectItem, DsSelectTrigger, DsSelectValue } from './DsSelect';
+import { DsFormField, type DsFormFieldBaseProps } from "../Form";
+import {
+  DsSelect,
+  DsSelectContent,
+  DsSelectItem,
+  DsSelectTrigger,
+  DsSelectValue,
+} from "./DsSelect";
 
 export interface DsFormSelectOption {
   value: string;
@@ -18,25 +24,39 @@ export interface DsFormSelectProps extends DsFormFieldBaseProps {
   triggerClassName?: string;
 }
 
-export function DsFormSelect({ options, children, placeholder, triggerClassName, ...fieldProps }: DsFormSelectProps) {
+export function DsFormSelect({
+  options,
+  children,
+  placeholder,
+  triggerClassName,
+  ...fieldProps
+}: DsFormSelectProps) {
   return (
     <DsFormField {...fieldProps}>
       {({ field, controlProps }) => (
         <DsSelect
           name={field.name}
           // Always controlled: '' shows the placeholder (undefined would flip Radix to uncontrolled).
-          value={field.value ?? ''}
+          value={field.value ?? ""}
           onValueChange={field.onChange}
           disabled={field.disabled}
           onOpenChange={(open) => !open && field.onBlur()}
         >
-          <DsSelectTrigger ref={field.ref} {...controlProps} className={triggerClassName ?? 'w-full'}>
+          <DsSelectTrigger
+            ref={field.ref}
+            {...controlProps}
+            className={triggerClassName ?? "w-full"}
+          >
             <DsSelectValue placeholder={placeholder} />
           </DsSelectTrigger>
           <DsSelectContent>
             {children ??
               options?.map((option) => (
-                <DsSelectItem key={option.value} value={option.value} disabled={option.disabled}>
+                <DsSelectItem
+                  key={option.value}
+                  value={option.value}
+                  disabled={option.disabled}
+                >
                   {option.label}
                 </DsSelectItem>
               ))}

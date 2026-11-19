@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "cn"
-import { Tabs as TabsPrimitive } from "radix-ui"
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "cn";
+import { Tabs as TabsPrimitive } from "radix-ui";
+import * as React from "react";
 
 function DsTabs({
   className,
@@ -16,11 +16,11 @@ function DsTabs({
       data-orientation={orientation}
       className={cn(
         "group/tabs flex gap-2 data-horizontal:flex-col",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 const dsTabsListVariants = cva(
@@ -35,8 +35,8 @@ const dsTabsListVariants = cva(
     defaultVariants: {
       variant: "default",
     },
-  }
-)
+  },
+);
 
 function DsTabsList({
   className,
@@ -51,7 +51,7 @@ function DsTabsList({
       className={cn(dsTabsListVariants({ variant }), className)}
       {...props}
     />
-  )
+  );
 }
 
 function DsTabsTrigger({
@@ -66,11 +66,11 @@ function DsTabsTrigger({
         "group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-active:bg-transparent dark:group-data-[variant=line]/tabs-list:data-active:border-transparent dark:group-data-[variant=line]/tabs-list:data-active:bg-transparent",
         "data-active:bg-background data-active:text-foreground dark:data-active:border-input dark:data-active:bg-input/30 dark:data-active:text-foreground",
         "after:absolute after:bg-foreground after:opacity-0 after:transition-opacity group-data-horizontal/tabs:after:inset-x-0 group-data-horizontal/tabs:after:bottom-[-5px] group-data-horizontal/tabs:after:h-0.5 group-data-vertical/tabs:after:inset-y-0 group-data-vertical/tabs:after:-end-1 group-data-vertical/tabs:after:w-0.5 group-data-[variant=line]/tabs-list:data-active:after:opacity-100",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function DsTabsContent({
@@ -83,7 +83,7 @@ function DsTabsContent({
       className={cn("flex-1 text-sm outline-none", className)}
       {...props}
     />
-  )
+  );
 }
 
-export { DsTabs, DsTabsList, DsTabsTrigger, DsTabsContent, dsTabsListVariants }
+export { DsTabs, DsTabsContent, DsTabsList, dsTabsListVariants, DsTabsTrigger };

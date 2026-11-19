@@ -15,7 +15,9 @@ export default function ForbiddenPage() {
         403
       </DsTypography>
       <DsTypography variant="h3">Access Denied</DsTypography>
-      <DsTypography variant="helperText">You do not have permission to view this page.</DsTypography>
+      <DsTypography variant="helperText">
+        You do not have permission to view this page.
+      </DsTypography>
       <Link
         href={ROUTES.DASHBOARD.HOME}
         className="inline-flex h-10 items-center justify-center rounded-xl bg-(--color-primary) px-4 text-sm font-medium text-(--color-text-inverse) transition hover:opacity-90"

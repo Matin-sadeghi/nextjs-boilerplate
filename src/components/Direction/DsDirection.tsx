@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Direction } from "radix-ui"
+import { Direction } from "radix-ui";
+import * as React from "react";
 
 function DsDirectionProvider({
   dir,
   children,
 }: {
-  dir: "ltr" | "rtl"
-  children: React.ReactNode
+  dir: "ltr" | "rtl";
+  children: React.ReactNode;
 }) {
-  return <Direction.Provider dir={dir}>{children}</Direction.Provider>
+  return <Direction.Provider dir={dir}>{children}</Direction.Provider>;
 }
 
-export { DsDirectionProvider }
+export { DsDirectionProvider };

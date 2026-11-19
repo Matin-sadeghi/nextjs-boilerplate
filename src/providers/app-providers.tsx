@@ -27,8 +27,16 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <DsDirectionProvider dir={APP_DIR}>
       <DsTooltipProvider delayDuration={200}>
-        <Toaster richColors position="top-center" closeButton duration={4000} dir={APP_DIR} />
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        <Toaster
+          richColors
+          position="top-center"
+          closeButton
+          duration={4000}
+          dir={APP_DIR}
+        />
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
       </DsTooltipProvider>
     </DsDirectionProvider>
   );

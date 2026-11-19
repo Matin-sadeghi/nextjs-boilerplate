@@ -162,9 +162,12 @@
   --sidebar-ring: var(--color-brand-500);
 
   /* Elevation */
-  --card-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.06), 0 4px 12px -2px rgb(15 23 42 / 0.08);
-  --card-shadow-md: 0 1px 3px rgb(15 23 42 / 0.08), 0 12px 32px -4px rgb(15 23 42 / 0.14);
-  --card-shadow-lg: 0 2px 6px rgb(15 23 42 / 0.08), 0 24px 56px -8px rgb(15 23 42 / 0.22);
+  --card-shadow-sm:
+    0 1px 2px rgb(15 23 42 / 0.06), 0 4px 12px -2px rgb(15 23 42 / 0.08);
+  --card-shadow-md:
+    0 1px 3px rgb(15 23 42 / 0.08), 0 12px 32px -4px rgb(15 23 42 / 0.14);
+  --card-shadow-lg:
+    0 2px 6px rgb(15 23 42 / 0.08), 0 24px 56px -8px rgb(15 23 42 / 0.22);
 }
 
 /* ------------------------------------------------------ 2. Semantic · dark */
@@ -257,9 +260,12 @@
   --sidebar-ring: var(--color-brand-400);
 
   /* Elevation — darker and wider; a hairline highlight keeps edges visible */
-  --card-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 14px -2px rgb(0 0 0 / 0.45);
-  --card-shadow-md: 0 1px 3px rgb(0 0 0 / 0.45), 0 14px 40px -4px rgb(0 0 0 / 0.6);
-  --card-shadow-lg: 0 2px 8px rgb(0 0 0 / 0.5), 0 28px 64px -8px rgb(0 0 0 / 0.75);
+  --card-shadow-sm:
+    0 1px 2px rgb(0 0 0 / 0.4), 0 4px 14px -2px rgb(0 0 0 / 0.45);
+  --card-shadow-md:
+    0 1px 3px rgb(0 0 0 / 0.45), 0 14px 40px -4px rgb(0 0 0 / 0.6);
+  --card-shadow-lg:
+    0 2px 8px rgb(0 0 0 / 0.5), 0 28px 64px -8px rgb(0 0 0 / 0.75);
 }
 
 /* --------------------------------------------------------- 3. Utilities */

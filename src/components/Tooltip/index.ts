@@ -1,1 +1,1 @@
-export * from './DsTooltip';
+export * from "./DsTooltip";

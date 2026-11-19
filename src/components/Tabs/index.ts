@@ -1,1 +1,1 @@
-export * from './DsTabs';
+export * from "./DsTabs";

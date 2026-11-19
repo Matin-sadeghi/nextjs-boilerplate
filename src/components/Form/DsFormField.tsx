@@ -1,16 +1,16 @@
-'use client';
-import type { ReactNode } from 'react';
+"use client";
+import type { ReactNode } from "react";
 import {
   useController,
   useFormContext,
   type ControllerFieldState,
   type ControllerRenderProps,
   type FieldValues,
-} from 'react-hook-form';
+} from "react-hook-form";
 
-import { cn } from '@/src/lib/utils';
-import { DsDescription, DsErrorMessage, DsField } from '../Field';
-import { DsLabel } from '../Label';
+import { cn } from "@/src/lib/utils";
+import { DsDescription, DsErrorMessage, DsField } from "../Field";
+import { DsLabel } from "../Label";
 
 /** Props every DsForm* component accepts. */
 export interface DsFormFieldBaseProps {
@@ -28,8 +28,8 @@ export interface DsFormFieldBaseProps {
 /** Spread onto the control so label, hint and error are announced correctly. */
 export interface DsFormControlProps {
   id: string;
-  'aria-invalid': true | undefined;
-  'aria-describedby': string | undefined;
+  "aria-invalid": true | undefined;
+  "aria-describedby": string | undefined;
 }
 
 export interface DsFormFieldRenderProps {
@@ -45,7 +45,7 @@ export interface DsFormFieldProps extends DsFormFieldBaseProps {
    * `vertical`: label above the control (inputs, selects).
    * `horizontal`: control then label on one line (checkbox, switch).
    */
-  orientation?: 'vertical' | 'horizontal';
+  orientation?: "vertical" | "horizontal";
   children: (props: DsFormFieldRenderProps) => ReactNode;
 }
 
@@ -65,7 +65,7 @@ export function DsFormField({
   id = name,
   disabled,
   className,
-  orientation = 'vertical',
+  orientation = "vertical",
   children,
 }: DsFormFieldProps) {
   const { control } = useFormContext();
@@ -78,8 +78,9 @@ export function DsFormField({
 
   const controlProps: DsFormControlProps = {
     id,
-    'aria-invalid': fieldState.invalid || undefined,
-    'aria-describedby': [descriptionId, errorId].filter(Boolean).join(' ') || undefined,
+    "aria-invalid": fieldState.invalid || undefined,
+    "aria-describedby":
+      [descriptionId, errorId].filter(Boolean).join(" ") || undefined,
   };
 
   const labelNode = label && (
@@ -87,13 +88,20 @@ export function DsFormField({
       {label}
     </DsLabel>
   );
-  const descriptionNode = description && <DsDescription id={descriptionId}>{description}</DsDescription>;
-  const errorNode = errorMessage && <DsErrorMessage id={errorId}>{errorMessage}</DsErrorMessage>;
+  const descriptionNode = description && (
+    <DsDescription id={descriptionId}>{description}</DsDescription>
+  );
+  const errorNode = errorMessage && (
+    <DsErrorMessage id={errorId}>{errorMessage}</DsErrorMessage>
+  );
   const controlNode = children({ field, fieldState, controlProps, labelId });
 
-  if (orientation === 'horizontal') {
+  if (orientation === "horizontal") {
     return (
-      <DsField disabled={field.disabled} className={cn('flex-row items-start gap-3', className)}>
+      <DsField
+        disabled={field.disabled}
+        className={cn("flex-row items-start gap-3", className)}
+      >
         <div className="flex min-h-5 items-center">{controlNode}</div>
         <div className="flex flex-col gap-1.5 pt-0.5">
           {labelNode}

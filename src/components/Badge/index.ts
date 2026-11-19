@@ -1,1 +1,1 @@
-export * from './DsBadge';
+export * from "./DsBadge";
