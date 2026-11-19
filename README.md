@@ -179,7 +179,14 @@ Open **`/ui-kit`** in the dev server to see every component and its variants (so
 | `DsButton` | `variant` = `primary`, `secondary`, `outline`, `ghost`, `danger`, `link`; `size` = `xs`–`lg`, `icon-xs`–`icon-lg`; `loading`, `asChild` |
 | `DsBadge` | Small status label |
 | `DsInput` / `DsFormInput` | Text input with icons and invalid state / React Hook Form version with label and error |
-| `DsTextarea`, `DsCheckbox`, `DsSelect` | Other form controls |
+| `DsTextarea`, `DsCheckbox`, `DsSelect`, `DsSwitch`, `DsRadioGroup` | Other form controls |
+| `DsCombobox` | Select with search for long lists; `options` with `keywords` for extra search terms |
+| `DsAlertDialog` | Confirmation before destructive or important actions |
+| `DsSheet` | Side panel (`side` = `right`, `left`, `top`, `bottom`): mobile menu, filters, quick edit |
+| `DsCommand` / `DsCommandDialog` | Searchable command list / ⌘K command palette (cmdk) |
+| `DsAvatar` | User image with fallback initials, status badge, groups |
+| `DsBreadcrumb`, `DsPageHeader` | Navigation trail / standard page title with description and actions |
+| `DsEmpty` | Empty states ("no projects yet") with icon, text and action |
 | `DsForm` | Form wired to React Hook Form |
 | `DsField`, `DsLabel`, `DsFieldset`, … | Field layout helpers |
 | `DsDialog`, `DsPopover`, `DsTooltip`, `DsDropdownMenu` | Overlays (Radix: focus trap, keyboard, positioning) |

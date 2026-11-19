@@ -1,15 +1,21 @@
 // All shared components. Import from "@/src/components".
-// Each folder holds the base component (shadcn source, e.g. Button.tsx) and,
-// where needed, the project wrapper (e.g. DsButton.tsx).
+// One folder per component (e.g. Button/DsButton.tsx), all named Ds*.
+// See README → "Adding a shadcn/ui component".
 export * from "./Accordion";
+export * from "./AlertDialog";
+export * from "./Avatar";
 export * from "./Badge";
 export * from "./Box";
+export * from "./Breadcrumb";
 export * from "./Button";
 export * from "./Calendar";
 export * from "./Checkbox";
+export * from "./Combobox";
+export * from "./Command";
 export * from "./Dialog";
 export * from "./Direction";
 export * from "./DropdownMenu";
+export * from "./Empty";
 export * from "./Field";
 export * from "./Form";
 export * from "./Guard";
@@ -17,10 +23,14 @@ export * from "./Input";
 export * from "./Label";
 export * from "./Layouts";
 export * from "./Loading";
+export * from "./PageHeader";
 export * from "./Popover";
+export * from "./RadioGroup";
 export * from "./Select";
 export * from "./Separator";
+export * from "./Sheet";
 export * from "./Skeleton";
+export * from "./Switch";
 export * from "./Table";
 export * from "./Tabs";
 export * from "./Textarea";

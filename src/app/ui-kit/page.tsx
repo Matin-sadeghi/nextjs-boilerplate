@@ -1,12 +1,14 @@
 "use client";
 
-import { Suspense, use, useState, type ReactNode } from "react";
+import { Suspense, use, useEffect, useState, type ReactNode } from "react";
 import { io } from "next/cache";
 import Link from "next/link";
 import {
   Bell,
   CalendarIcon,
   Copy,
+  FolderOpen,
+  Home,
   Mail,
   MoreHorizontal,
   Pencil,
@@ -14,8 +16,11 @@ import {
   Search,
   Settings,
   Share2,
+  SlidersHorizontal,
   Trash2,
+  TriangleAlert,
   User as UserIcon,
+  Users,
 } from "lucide-react";
 import { toast } from "sonner";
 import type { DateRange } from "react-day-picker";
@@ -27,11 +32,44 @@ import {
   DsAccordionContent,
   DsAccordionItem,
   DsAccordionTrigger,
+  DsAlertDialog,
+  DsAlertDialogAction,
+  DsAlertDialogCancel,
+  DsAlertDialogContent,
+  DsAlertDialogDescription,
+  DsAlertDialogFooter,
+  DsAlertDialogHeader,
+  DsAlertDialogMedia,
+  DsAlertDialogTitle,
+  DsAlertDialogTrigger,
+  DsAvatar,
+  DsAvatarBadge,
+  DsAvatarFallback,
+  DsAvatarGroup,
+  DsAvatarGroupCount,
+  DsAvatarImage,
   DsBadge,
   DsBox,
+  DsBreadcrumb,
+  DsBreadcrumbItem,
+  DsBreadcrumbLink,
+  DsBreadcrumbList,
+  DsBreadcrumbPage,
+  DsBreadcrumbSeparator,
   DsButton,
   DsCalendar,
   DsCheckbox,
+  DsCombobox,
+  type DsComboboxOption,
+  DsCommand,
+  DsCommandDialog,
+  DsCommandEmpty,
+  DsCommandGroup,
+  DsCommandInput,
+  DsCommandItem,
+  DsCommandList,
+  DsCommandSeparator,
+  DsCommandShortcut,
   DsDataTable,
   DsDescription,
   DsDialog,
@@ -57,6 +95,12 @@ import {
   DsDropdownMenuSubContent,
   DsDropdownMenuSubTrigger,
   DsDropdownMenuTrigger,
+  DsEmpty,
+  DsEmptyContent,
+  DsEmptyDescription,
+  DsEmptyHeader,
+  DsEmptyMedia,
+  DsEmptyTitle,
   DsErrorMessage,
   DsField,
   DsFieldGroup,
@@ -67,12 +111,15 @@ import {
   DsLabel,
   DsLegend,
   DsLoading,
+  DsPageHeader,
   DsPopover,
   DsPopoverContent,
   DsPopoverDescription,
   DsPopoverHeader,
   DsPopoverTitle,
   DsPopoverTrigger,
+  DsRadioGroup,
+  DsRadioGroupItem,
   DsSelect,
   DsSelectContent,
   DsSelectGroup,
@@ -82,7 +129,16 @@ import {
   DsSelectTrigger,
   DsSelectValue,
   DsSeparator,
+  DsSheet,
+  DsSheetClose,
+  DsSheetContent,
+  DsSheetDescription,
+  DsSheetFooter,
+  DsSheetHeader,
+  DsSheetTitle,
+  DsSheetTrigger,
   DsSkeleton,
+  DsSwitch,
   DsTable,
   DsTableBody,
   DsTableCaption,
@@ -242,14 +298,27 @@ const Row = ({ label, children }: { label: string; children: ReactNode }) => (
   </div>
 );
 
+const frameworks: DsComboboxOption[] = [
+  { value: "next", label: "Next.js", keywords: ["react", "vercel"] },
+  { value: "remix", label: "Remix", keywords: ["react"] },
+  { value: "astro", label: "Astro" },
+  { value: "nuxt", label: "Nuxt", keywords: ["vue"] },
+  { value: "sveltekit", label: "SvelteKit", keywords: ["svelte"] },
+  { value: "angular", label: "Angular", disabled: true },
+];
+
 const sections = [
   ["typography", "Typography"],
   ["box", "Box"],
   ["buttons", "Buttons"],
   ["badges", "Badges"],
+  ["avatar", "Avatar"],
   ["inputs", "Inputs"],
+  ["controls", "Switch · Radio · Combobox"],
   ["form", "Form"],
   ["overlays", "Overlays"],
+  ["dialogs", "Alert dialog · Sheet · Command"],
+  ["empty", "Empty"],
   ["tabs", "Tabs"],
   ["accordion", "Accordion"],
   ["calendar", "Calendar"],
@@ -270,7 +339,10 @@ function CalendarDemo() {
   const [date, setDate] = useState<Date | undefined>(() => new Date());
   const [range, setRange] = useState<DateRange | undefined>(() => {
     const from = new Date();
-    return { from, to: new Date(from.getFullYear(), from.getMonth(), from.getDate() + 6) };
+    return {
+      from,
+      to: new Date(from.getFullYear(), from.getMonth(), from.getDate() + 6),
+    };
   });
   const [birthday, setBirthday] = useState<Date | undefined>();
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -284,7 +356,7 @@ function CalendarDemo() {
             <DsCalendar mode="single" selected={date} onSelect={setDate} />
           </DsBox>
         </Row>
-  
+
         <Row label='mode="range" · numberOfMonths={2}'>
           <DsBox variant="card" className="overflow-hidden">
             <DsCalendar
@@ -296,14 +368,19 @@ function CalendarDemo() {
             />
           </DsBox>
         </Row>
-  
+
         <Row label='captionLayout="dropdown"'>
           <DsBox variant="card" className="overflow-hidden">
-            <DsCalendar mode="single" captionLayout="dropdown" selected={date} onSelect={setDate} />
+            <DsCalendar
+              mode="single"
+              captionLayout="dropdown"
+              selected={date}
+              onSelect={setDate}
+            />
           </DsBox>
         </Row>
       </div>
-  
+
       <Row label="Date picker">
         <DsField className="w-64">
           <DsLabel htmlFor="kit-birthday">Birthday</DsLabel>
@@ -314,13 +391,18 @@ function CalendarDemo() {
                 variant="outline"
                 className="w-full justify-between font-normal"
               >
-                <span className={birthday ? undefined : "text-muted-foreground"}>
+                <span
+                  className={birthday ? undefined : "text-muted-foreground"}
+                >
                   {birthday ? birthday.toLocaleDateString() : "Select date"}
                 </span>
                 <CalendarIcon className="text-muted-foreground" />
               </DsButton>
             </DsPopoverTrigger>
-            <DsPopoverContent className="w-auto overflow-hidden p-0" align="start">
+            <DsPopoverContent
+              className="w-auto overflow-hidden p-0"
+              align="start"
+            >
               <DsCalendar
                 mode="single"
                 captionLayout="dropdown"
@@ -355,6 +437,24 @@ export default function UiKitPage() {
   const [showPanel, setShowPanel] = useState(false);
   const [position, setPosition] = useState("bottom");
 
+  // Controls
+  const [notifications, setNotifications] = useState(true);
+  const [plan, setPlan] = useState("pro");
+  const [framework, setFramework] = useState<string | undefined>("next");
+
+  // Command palette (⌘K / Ctrl+K)
+  const [commandOpen, setCommandOpen] = useState(false);
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setCommandOpen((open) => !open);
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, []);
+
   // Data table
   const [tableLoading, setTableLoading] = useState(false);
 
@@ -371,21 +471,49 @@ export default function UiKitPage() {
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-10">
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <DsTypography variant="h2" as="h1">
-            UI kit
-          </DsTypography>
-          <DsTypography variant="helperText">
-            Every component in <code className="font-mono">src/components</code>
-            , in one place.
-          </DsTypography>
-        </div>
-        <DsButton variant="outline" onClick={toggleTheme}>
-          Theme: {theme}
-        </DsButton>
-      </div>
+      {/* Header: DsPageHeader + DsBreadcrumb */}
+      <DsPageHeader
+        title="UI kit"
+        description={
+          <>
+            Every component in <code className="font-mono">src/components</code>, in one place.
+          </>
+        }
+        breadcrumb={
+          <DsBreadcrumb>
+            <DsBreadcrumbList>
+              <DsBreadcrumbItem>
+                <DsBreadcrumbLink asChild>
+                  <Link href="/" className="inline-flex items-center gap-1">
+                    <Home className="size-3.5" /> Home
+                  </Link>
+                </DsBreadcrumbLink>
+              </DsBreadcrumbItem>
+              <DsBreadcrumbSeparator />
+              <DsBreadcrumbItem>
+                <DsBreadcrumbLink href="#">Docs</DsBreadcrumbLink>
+              </DsBreadcrumbItem>
+              <DsBreadcrumbSeparator />
+              <DsBreadcrumbItem>
+                <DsBreadcrumbPage>UI kit</DsBreadcrumbPage>
+              </DsBreadcrumbItem>
+            </DsBreadcrumbList>
+          </DsBreadcrumb>
+        }
+        actions={
+          <>
+            <DsButton variant="outline" onClick={() => setCommandOpen(true)}>
+              <Search /> Search
+              <kbd className="ms-2 rounded border border-border bg-muted px-1.5 font-mono text-[10px] text-muted-foreground">
+                Ctrl K
+              </kbd>
+            </DsButton>
+            <DsButton variant="outline" onClick={toggleTheme}>
+              Theme: {theme}
+            </DsButton>
+          </>
+        }
+      />
 
       <nav className="flex flex-wrap gap-1.5">
         {sections.map(([id, label]) => (
@@ -457,13 +585,19 @@ export default function UiKitPage() {
         </div>
         <div className="grid gap-6 sm:grid-cols-3">
           <DsBox variant="card" padding="md" shadow="sm">
-            <DsTypography variant="bodySmall">shadow=&quot;sm&quot;</DsTypography>
+            <DsTypography variant="bodySmall">
+              shadow=&quot;sm&quot;
+            </DsTypography>
           </DsBox>
           <DsBox variant="card" padding="md" shadow="md">
-            <DsTypography variant="bodySmall">shadow=&quot;md&quot; (or shadow)</DsTypography>
+            <DsTypography variant="bodySmall">
+              shadow=&quot;md&quot; (or shadow)
+            </DsTypography>
           </DsBox>
           <DsBox variant="card" padding="md" shadow="lg">
-            <DsTypography variant="bodySmall">shadow=&quot;lg&quot;</DsTypography>
+            <DsTypography variant="bodySmall">
+              shadow=&quot;lg&quot;
+            </DsTypography>
           </DsBox>
         </div>
       </Section>
@@ -522,6 +656,41 @@ export default function UiKitPage() {
           <DsBadge>
             <Bell /> With icon
           </DsBadge>
+        </Row>
+      </Section>
+
+      {/* Avatar */}
+      <Section id="avatar" title="DsAvatar" description="Image with fallback initials, sizes, status badge and stacked groups.">
+        <Row label="size · fallback">
+          <DsAvatar size="sm">
+            <DsAvatarImage src="https://github.com/shadcn.png" alt="shadcn" />
+            <DsAvatarFallback>CN</DsAvatarFallback>
+          </DsAvatar>
+          <DsAvatar>
+            <DsAvatarImage src="https://github.com/shadcn.png" alt="shadcn" />
+            <DsAvatarFallback>CN</DsAvatarFallback>
+          </DsAvatar>
+          <DsAvatar size="lg">
+            <DsAvatarImage src="https://github.com/shadcn.png" alt="shadcn" />
+            <DsAvatarFallback>CN</DsAvatarFallback>
+          </DsAvatar>
+          <DsAvatar size="lg">
+            <DsAvatarFallback>AL</DsAvatarFallback>
+          </DsAvatar>
+          <DsAvatar size="lg">
+            <DsAvatarFallback>MS</DsAvatarFallback>
+            <DsAvatarBadge className="bg-success" />
+          </DsAvatar>
+        </Row>
+        <Row label="DsAvatarGroup">
+          <DsAvatarGroup>
+            {["AB", "CD", "EF"].map((initials) => (
+              <DsAvatar key={initials}>
+                <DsAvatarFallback>{initials}</DsAvatarFallback>
+              </DsAvatar>
+            ))}
+            <DsAvatarGroupCount>+5</DsAvatarGroupCount>
+          </DsAvatarGroup>
         </Row>
       </Section>
 
@@ -628,6 +797,67 @@ export default function UiKitPage() {
                 Disabled checkbox
               </DsLabel>
             </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* Switch · Radio · Combobox */}
+      <Section id="controls" title="DsSwitch · DsRadioGroup · DsCombobox">
+        <div className="grid gap-8 md:grid-cols-3">
+          <div className="flex flex-col gap-4">
+            <DsTypography variant="caption">DsSwitch</DsTypography>
+            <div className="flex items-center gap-3">
+              <DsSwitch id="kit-notifications" checked={notifications} onCheckedChange={setNotifications} />
+              <DsLabel htmlFor="kit-notifications">Email notifications</DsLabel>
+            </div>
+            <div className="flex items-center gap-3">
+              <DsSwitch id="kit-switch-sm" size="sm" defaultChecked />
+              <DsLabel htmlFor="kit-switch-sm">Small</DsLabel>
+            </div>
+            <div className="flex items-center gap-3">
+              <DsSwitch id="kit-switch-disabled" disabled />
+              <DsLabel htmlFor="kit-switch-disabled">Disabled</DsLabel>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <DsTypography variant="caption">DsRadioGroup</DsTypography>
+            <DsRadioGroup value={plan} onValueChange={setPlan} aria-label="Plan">
+              {[
+                ["free", "Free"],
+                ["pro", "Pro"],
+                ["team", "Team"],
+              ].map(([value, label]) => (
+                <div key={value} className="flex items-center gap-3">
+                  <DsRadioGroupItem value={value} id={`kit-plan-${value}`} />
+                  <DsLabel htmlFor={`kit-plan-${value}`}>{label}</DsLabel>
+                </div>
+              ))}
+              <div className="flex items-center gap-3">
+                <DsRadioGroupItem value="enterprise" id="kit-plan-enterprise" disabled />
+                <DsLabel htmlFor="kit-plan-enterprise">Enterprise (disabled)</DsLabel>
+              </div>
+            </DsRadioGroup>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <DsTypography variant="caption">DsCombobox (searchable select)</DsTypography>
+            <DsField>
+              <DsLabel htmlFor="kit-framework">Framework</DsLabel>
+              <DsCombobox
+                id="kit-framework"
+                options={frameworks}
+                value={framework}
+                onValueChange={setFramework}
+                placeholder="Select framework…"
+                searchPlaceholder="Search framework…"
+              />
+              <DsDescription>Try typing “react” or “vue”.</DsDescription>
+            </DsField>
+            <DsField>
+              <DsLabel htmlFor="kit-framework-invalid">Invalid</DsLabel>
+              <DsCombobox id="kit-framework-invalid" options={frameworks} invalid />
+            </DsField>
           </div>
         </div>
       </Section>
@@ -799,6 +1029,200 @@ export default function UiKitPage() {
         </div>
       </Section>
 
+      {/* Alert dialog · Sheet · Command */}
+      <Section
+        id="dialogs"
+        title="DsAlertDialog · DsSheet · DsCommand"
+        description="Confirmations, side panels and a ⌘K / Ctrl+K command palette."
+      >
+        <Row label="DsAlertDialog">
+          <DsAlertDialog>
+            <DsAlertDialogTrigger asChild>
+              <DsButton variant="outline">Confirm action</DsButton>
+            </DsAlertDialogTrigger>
+            <DsAlertDialogContent>
+              <DsAlertDialogHeader>
+                <DsAlertDialogTitle>Publish changes?</DsAlertDialogTitle>
+                <DsAlertDialogDescription>Your changes will be visible to everyone.</DsAlertDialogDescription>
+              </DsAlertDialogHeader>
+              <DsAlertDialogFooter>
+                <DsAlertDialogCancel>Cancel</DsAlertDialogCancel>
+                <DsAlertDialogAction onClick={() => toast.success("Published")}>Publish</DsAlertDialogAction>
+              </DsAlertDialogFooter>
+            </DsAlertDialogContent>
+          </DsAlertDialog>
+
+          <DsAlertDialog>
+            <DsAlertDialogTrigger asChild>
+              <DsButton variant="danger">
+                <Trash2 /> Delete project
+              </DsButton>
+            </DsAlertDialogTrigger>
+            <DsAlertDialogContent size="sm">
+              <DsAlertDialogHeader>
+                <DsAlertDialogMedia className="bg-destructive-soft text-destructive">
+                  <TriangleAlert />
+                </DsAlertDialogMedia>
+                <DsAlertDialogTitle>Delete this project?</DsAlertDialogTitle>
+                <DsAlertDialogDescription>This can’t be undone.</DsAlertDialogDescription>
+              </DsAlertDialogHeader>
+              <DsAlertDialogFooter>
+                <DsAlertDialogCancel>Cancel</DsAlertDialogCancel>
+                <DsAlertDialogAction variant="danger" onClick={() => toast.error("Project deleted")}>
+                  Delete
+                </DsAlertDialogAction>
+              </DsAlertDialogFooter>
+            </DsAlertDialogContent>
+          </DsAlertDialog>
+        </Row>
+
+        <Row label="DsSheet · side">
+          {(["right", "left", "bottom"] as const).map((side) => (
+            <DsSheet key={side}>
+              <DsSheetTrigger asChild>
+                <DsButton variant="outline">
+                  <SlidersHorizontal /> {side}
+                </DsButton>
+              </DsSheetTrigger>
+              <DsSheetContent side={side}>
+                <DsSheetHeader>
+                  <DsSheetTitle>Filters</DsSheetTitle>
+                  <DsSheetDescription>Narrow down the results.</DsSheetDescription>
+                </DsSheetHeader>
+                <div className="flex flex-col gap-4 px-4">
+                  <DsField>
+                    <DsLabel htmlFor={`sheet-search-${side}`}>Keyword</DsLabel>
+                    <DsInput id={`sheet-search-${side}`} placeholder="Search…" startIcon={<Search />} />
+                  </DsField>
+                  <DsField>
+                    <DsLabel htmlFor={`sheet-framework-${side}`}>Framework</DsLabel>
+                    <DsCombobox id={`sheet-framework-${side}`} options={frameworks} />
+                  </DsField>
+                  <div className="flex items-center gap-3">
+                    <DsSwitch id={`sheet-active-${side}`} defaultChecked />
+                    <DsLabel htmlFor={`sheet-active-${side}`}>Active only</DsLabel>
+                  </div>
+                </div>
+                <DsSheetFooter>
+                  <DsSheetClose asChild>
+                    <DsButton onClick={() => toast("Filters applied")}>Apply</DsButton>
+                  </DsSheetClose>
+                  <DsSheetClose asChild>
+                    <DsButton variant="outline">Cancel</DsButton>
+                  </DsSheetClose>
+                </DsSheetFooter>
+              </DsSheetContent>
+            </DsSheet>
+          ))}
+        </Row>
+
+        <Row label="DsCommand (inline)">
+          <DsCommand className="w-full max-w-sm rounded-xl border border-border shadow-card-sm">
+            <DsCommandInput placeholder="Type a command…" />
+            <DsCommandList>
+              <DsCommandEmpty>No results.</DsCommandEmpty>
+              <DsCommandGroup heading="Suggestions">
+                <DsCommandItem>
+                  <CalendarIcon /> Calendar
+                </DsCommandItem>
+                <DsCommandItem>
+                  <Users /> Team
+                </DsCommandItem>
+              </DsCommandGroup>
+              <DsCommandSeparator />
+              <DsCommandGroup heading="Settings">
+                <DsCommandItem>
+                  <UserIcon /> Profile <DsCommandShortcut>⌘P</DsCommandShortcut>
+                </DsCommandItem>
+                <DsCommandItem>
+                  <Settings /> Settings <DsCommandShortcut>⌘S</DsCommandShortcut>
+                </DsCommandItem>
+              </DsCommandGroup>
+            </DsCommandList>
+          </DsCommand>
+        </Row>
+
+        <Row label="DsCommandDialog">
+          <DsButton variant="outline" onClick={() => setCommandOpen(true)}>
+            <Search /> Open command palette
+          </DsButton>
+          <DsTypography variant="caption">or press Ctrl+K / ⌘K anywhere on this page</DsTypography>
+        </Row>
+        <DsCommandDialog open={commandOpen} onOpenChange={setCommandOpen}>
+          <DsCommand>
+            <DsCommandInput placeholder="Jump to a section…" />
+            <DsCommandList>
+              <DsCommandEmpty>No results.</DsCommandEmpty>
+              <DsCommandGroup heading="Sections">
+                {sections.map(([id, label]) => (
+                  <DsCommandItem
+                    key={id}
+                    onSelect={() => {
+                      setCommandOpen(false);
+                      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                  >
+                    {label}
+                  </DsCommandItem>
+                ))}
+              </DsCommandGroup>
+              <DsCommandSeparator />
+              <DsCommandGroup heading="Actions">
+                <DsCommandItem
+                  onSelect={() => {
+                    toggleTheme();
+                    setCommandOpen(false);
+                  }}
+                >
+                  <Settings /> Toggle theme
+                </DsCommandItem>
+              </DsCommandGroup>
+            </DsCommandList>
+          </DsCommand>
+        </DsCommandDialog>
+      </Section>
+
+      {/* Empty */}
+      <Section id="empty" title="DsEmpty" description="Empty states for lists, searches and first-run screens.">
+        <div className="grid gap-4 md:grid-cols-2">
+          <DsEmpty className="border border-dashed border-border">
+            <DsEmptyHeader>
+              <DsEmptyMedia variant="icon">
+                <FolderOpen />
+              </DsEmptyMedia>
+              <DsEmptyTitle>No projects yet</DsEmptyTitle>
+              <DsEmptyDescription>Create your first project to get started.</DsEmptyDescription>
+            </DsEmptyHeader>
+            <DsEmptyContent>
+              <DsButton onClick={() => toast("Create project")}>
+                <Plus /> New project
+              </DsButton>
+            </DsEmptyContent>
+          </DsEmpty>
+
+          <DsEmpty className="border border-dashed border-border">
+            <DsEmptyHeader>
+              <DsEmptyMedia>
+                <DsAvatarGroup>
+                  {["AB", "CD", "EF"].map((initials) => (
+                    <DsAvatar key={initials} size="lg">
+                      <DsAvatarFallback>{initials}</DsAvatarFallback>
+                    </DsAvatar>
+                  ))}
+                </DsAvatarGroup>
+              </DsEmptyMedia>
+              <DsEmptyTitle>No team members</DsEmptyTitle>
+              <DsEmptyDescription>Invite people to collaborate on this workspace.</DsEmptyDescription>
+            </DsEmptyHeader>
+            <DsEmptyContent>
+              <DsButton variant="outline" onClick={() => toast("Invite sent")}>
+                <Users /> Invite members
+              </DsButton>
+            </DsEmptyContent>
+          </DsEmpty>
+        </div>
+      </Section>
+
       {/* Calendar */}
       <Section
         id="calendar"
@@ -818,15 +1242,25 @@ export default function UiKitPage() {
       >
         <div className="grid gap-6 md:grid-cols-2">
           <Row label='variant="default" · type="single"'>
-            <DsAccordion type="single" collapsible defaultValue="shipping" className="w-full">
+            <DsAccordion
+              type="single"
+              collapsible
+              defaultValue="shipping"
+              className="w-full"
+            >
               <DsAccordionItem value="shipping">
-                <DsAccordionTrigger>How long does shipping take?</DsAccordionTrigger>
+                <DsAccordionTrigger>
+                  How long does shipping take?
+                </DsAccordionTrigger>
                 <DsAccordionContent>
-                  Orders ship within 2 business days and usually arrive in 3–5 days.
+                  Orders ship within 2 business days and usually arrive in 3–5
+                  days.
                 </DsAccordionContent>
               </DsAccordionItem>
               <DsAccordionItem value="returns">
-                <DsAccordionTrigger>What is your return policy?</DsAccordionTrigger>
+                <DsAccordionTrigger>
+                  What is your return policy?
+                </DsAccordionTrigger>
                 <DsAccordionContent>
                   <p>You can return any item within 30 days of delivery.</p>
                   <p>
@@ -842,18 +1276,29 @@ export default function UiKitPage() {
           </Row>
 
           <Row label='variant="card" · type="multiple"'>
-            <DsAccordion type="multiple" variant="card" defaultValue={["account"]} className="w-full">
+            <DsAccordion
+              type="multiple"
+              variant="card"
+              defaultValue={["account"]}
+              className="w-full"
+            >
               <DsAccordionItem value="account">
                 <DsAccordionTrigger>Account settings</DsAccordionTrigger>
-                <DsAccordionContent>Manage your name, email and password.</DsAccordionContent>
+                <DsAccordionContent>
+                  Manage your name, email and password.
+                </DsAccordionContent>
               </DsAccordionItem>
               <DsAccordionItem value="notifications">
                 <DsAccordionTrigger>Notifications</DsAccordionTrigger>
-                <DsAccordionContent>Choose which emails and alerts you receive.</DsAccordionContent>
+                <DsAccordionContent>
+                  Choose which emails and alerts you receive.
+                </DsAccordionContent>
               </DsAccordionItem>
               <DsAccordionItem value="billing">
                 <DsAccordionTrigger>Billing</DsAccordionTrigger>
-                <DsAccordionContent>Update your payment method and view invoices.</DsAccordionContent>
+                <DsAccordionContent>
+                  Update your payment method and view invoices.
+                </DsAccordionContent>
               </DsAccordionItem>
             </DsAccordion>
           </Row>
