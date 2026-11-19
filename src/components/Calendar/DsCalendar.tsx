@@ -196,6 +196,8 @@ function DsCalendarDayButton({
   day,
   modifiers,
   locale,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- HTML `color` attr is not a DsButton token
+  color: _color,
   ...props
 }: React.ComponentProps<typeof DayButton> & { locale?: Partial<Locale> }) {
   const defaultClassNames = getDefaultClassNames();

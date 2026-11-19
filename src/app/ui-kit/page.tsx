@@ -951,6 +951,54 @@ export default function UiKitPage() {
             <Link href="/">asChild → Link</Link>
           </DsButton>
         </Row>
+        <Row label="appearance × tone">
+          <DsButton appearance="solid" tone="success">
+            Solid
+          </DsButton>
+          <DsButton appearance="outline" tone="info">
+            Outline
+          </DsButton>
+          <DsButton appearance="soft" tone="warning">
+            Soft
+          </DsButton>
+          <DsButton appearance="ghost" tone="destructive">
+            Ghost
+          </DsButton>
+          <DsButton appearance="link" tone="neutral">
+            Link
+          </DsButton>
+        </Row>
+        <Row label="custom colors">
+          <DsButton color="info" bgColor="brand-950">
+            bgColor
+          </DsButton>
+          <DsButton
+            bgColor="success-soft"
+            color="success-soft-foreground"
+            rounded="full"
+          >
+            bgColor + color
+          </DsButton>
+          <DsButton appearance="outline" bgColor="chart-3">
+            Outline chart-3
+          </DsButton>
+          <DsButton
+            appearance="soft"
+            bgColor="brand-600"
+            borderColor="brand-300"
+          >
+            Soft + border
+          </DsButton>
+          <DsButton
+            appearance="solid"
+            tone="neutral"
+            size="icon"
+            rounded="full"
+            aria-label="Add"
+          >
+            <Plus />
+          </DsButton>
+        </Row>
       </Section>
 
       {/* Badges */}
