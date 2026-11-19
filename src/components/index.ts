@@ -30,6 +30,7 @@ export * from "./RadioGroup";
 export * from "./Select";
 export * from "./Separator";
 export * from "./Sheet";
+export * from "./Sidebar";
 export * from "./Skeleton";
 export * from "./Switch";
 export * from "./Table";

@@ -6,6 +6,12 @@ export const ROUTES = {
   DASHBOARD: {
     HOME: "/",
   },
+  ADMIN: {
+    HOME: "/admin",
+    USERS: "/admin/users",
+    SETTINGS: "/admin/settings",
+  },
+  UI_KIT: "/ui-kit",
   SIGNUP: "/login",
   FORBIDDEN: "/forbidden",
 } as const;

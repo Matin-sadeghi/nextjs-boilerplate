@@ -24,8 +24,8 @@ export function DsFormSelect({ options, children, placeholder, triggerClassName,
       {({ field, controlProps }) => (
         <DsSelect
           name={field.name}
-          // Radix Select needs `undefined` (not '') to show the placeholder.
-          value={field.value || undefined}
+          // Always controlled: '' shows the placeholder (undefined would flip Radix to uncontrolled).
+          value={field.value ?? ''}
           onValueChange={field.onChange}
           disabled={field.disabled}
           onOpenChange={(open) => !open && field.onBlur()}

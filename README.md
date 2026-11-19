@@ -58,7 +58,7 @@ src/
 ├── app/                 # Routes (App Router)
 │   ├── (auth)/          #   Public auth pages: /login
 │   ├── (main)/          #   Main app pages: /
-│   ├── admin/           #   Staff-only pages, wrapped in AdminAuthGuard
+│   ├── admin/           #   Admin panel (dashboard, users, settings), wrapped in AdminAuthGuard
 │   ├── forbidden/       #   403 page
 │   ├── health/          #   API health check page
 │   ├── error.tsx        #   Error boundary (unexpected errors)
@@ -307,6 +307,26 @@ npm run build
 ```
 
 > **Prerender gotcha:** with Cache Components, Next.js fails the build if a Client Component reads `new Date()`, `Date.now()` or `Math.random()` while rendering. Put that code in its own component that calls `use(io())` (from `next/cache`) first, and wrap it in `<Suspense>`. See `CalendarDemo` in the UI kit and `node_modules/next/dist/docs/01-app/03-api-reference/04-functions/io.md`.
+
+### Admin panel
+
+`/admin` uses `AdminLayout` (`src/components/Layouts/AdminLayout.tsx`) inside `AdminAuthGuard`:
+
+- **Sidebar** (`DsSidebar`): collapses to icons on desktop (button or **Ctrl+B**), opens as a drawer on phones. The footer has the user menu (profile, theme, sign out).
+- **Header**: breadcrumb built from the URL, **Ctrl+K** search over every page, theme toggle and notifications.
+- **Navigation** lives in one place, `NAV_SECTIONS` in `src/constants/portal-nav.ts`. It feeds the sidebar, the breadcrumb labels and the Ctrl+K search. To add a page, create `src/app/admin/<name>/page.tsx`, add its path to `ROUTES.ADMIN`, and add an item to `NAV_SECTIONS` (`match: "exact"` for a page that shouldn't stay active on its sub-pages).
+
+The pages are thin; their UI lives in `src/features/admin/`:
+
+| Route | Component | What it shows |
+| --- | --- | --- |
+| `/admin` | `DashboardOverview` | Stat cards, recent users, activity |
+| `/admin/users` | `UsersManagement` | Users table with add (dialog form), suspend/activate and delete (confirmation) |
+| `/admin/settings` | `SettingsForms` | Profile form (pre-filled from the current user), theme, notification switches |
+
+They use demo data from `src/features/admin/data/demo-users.ts` and simulated saves. Replace those with API calls and React Query hooks (see [Data fetching](#data-fetching)).
+
+> Because `/admin` is guarded, it needs the backend: without it the current-user request fails and you see the error page. Log in as a user with `is_staff: true`.
 
 ### Theme
 
