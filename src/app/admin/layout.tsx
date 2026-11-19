@@ -21,5 +21,9 @@ export default function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <AdminLayout>{children}</AdminLayout>;
+  return (
+    <AdminAuthGuard>
+      <AdminLayout>{children}</AdminLayout>;
+    </AdminAuthGuard>
+  );
 }

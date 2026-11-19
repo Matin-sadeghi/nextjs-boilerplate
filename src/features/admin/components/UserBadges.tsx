@@ -1,5 +1,4 @@
 import { DsAvatar, DsAvatarFallback, DsBadge } from '@/src/components';
-import { cn } from '@/src/lib/utils';
 import type { AdminUser, AdminUserRole, AdminUserStatus } from '../types';
 import { fullName, initials } from '../utils';
 
@@ -20,20 +19,20 @@ export function UserCell({ user }: { user: AdminUser }) {
 const roleLabels: Record<AdminUserRole, string> = { admin: 'Admin', editor: 'Editor', viewer: 'Viewer' };
 
 export function UserRoleBadge({ role }: { role: AdminUserRole }) {
-  return <DsBadge variant={role === 'admin' ? 'default' : 'secondary'}>{roleLabels[role]}</DsBadge>;
+  return <DsBadge variant={role === 'admin' ? 'brand' : role === 'editor' ? 'tertiary' : 'secondary'}>{roleLabels[role]}</DsBadge>;
 }
 
-const statusStyles: Record<AdminUserStatus, string> = {
-  active: 'bg-success-soft text-success',
-  invited: 'bg-info-soft text-info',
-  suspended: 'bg-destructive-soft text-destructive',
-};
+const statusVariant = {
+  active: 'success',
+  invited: 'info',
+  suspended: 'destructive',
+} as const satisfies Record<AdminUserStatus, string>;
 
 const statusLabels: Record<AdminUserStatus, string> = { active: 'Active', invited: 'Invited', suspended: 'Suspended' };
 
 export function UserStatusBadge({ status }: { status: AdminUserStatus }) {
   return (
-    <DsBadge variant="outline" className={cn('border-transparent', statusStyles[status])}>
+    <DsBadge variant={statusVariant[status]}>
       <span aria-hidden="true" className="size-1.5 rounded-full bg-current" />
       {statusLabels[status]}
     </DsBadge>

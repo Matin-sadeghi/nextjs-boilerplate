@@ -3,167 +3,272 @@
 @import "shadcn/tailwind.css";
 @custom-variant dark (&:where(.dark, .dark *));
 
-/*
- * Design tokens — single source of truth.
+/* ==========================================================================
+ * Design tokens — single source of truth for color, shadow and radius.
  *
- * Names follow the shadcn/ui convention so every component in
- * src/components/* (and anything added later via `npx shadcn add`)
- * picks up the brand automatically. Each token is exposed as a Tailwind
- * utility through the `@theme inline` block below, e.g.
- *   --primary            -> bg-primary / text-primary / border-primary
- *   --muted-foreground   -> text-muted-foreground
- *   --success-soft       -> bg-success-soft
- * Use the utilities in components; avoid hard-coded colors.
- */
+ * Three layers:
+ *   1. Palette   (@theme static) — raw color scales, same in light and dark:
+ *                  bg-brand-600, text-accent-violet-500, …
+ *   2. Semantic  (:root / .dark) — what a color is FOR, switches with the theme.
+ *                  Names follow shadcn/ui, so every component in src/components
+ *                  (and anything added with `npx shadcn add`) uses the brand.
+ *   3. Utilities (@theme inline) — each semantic token as a Tailwind class:
+ *                  --primary → bg-primary · --success-soft → bg-success-soft
+ *
+ * Rules of thumb
+ *   - Use semantic utilities in components (bg-primary, text-muted-foreground).
+ *     Reach for palette scales only for illustrations and one-off accents.
+ *   - Text on a tinted background uses its pair:
+ *       bg-success-soft + text-success-soft-foreground   (badges, alerts)
+ *       bg-primary      + text-primary-foreground        (solid buttons)
+ *   - Every pair meets WCAG AA (4.5:1) for normal text in both themes.
+ * ========================================================================== */
+
+/* -------------------------------------------------------------- 1. Palette */
+@theme static {
+  /* Brand — teal */
+  --color-brand-50: #f0fdfa;
+  --color-brand-100: #ccfbf1;
+  --color-brand-200: #99f6e4;
+  --color-brand-300: #5eead4;
+  --color-brand-400: #2dd4bf;
+  --color-brand-500: #14b8a6;
+  --color-brand-600: #0d9488;
+  --color-brand-700: #0f766e;
+  --color-brand-800: #115e59;
+  --color-brand-900: #134e4a;
+  --color-brand-950: #042f2e;
+
+  /* Accent — violet, for highlights that must stand apart from the brand */
+  --color-accent-violet-50: #f5f3ff;
+  --color-accent-violet-100: #ede9fe;
+  --color-accent-violet-200: #ddd6fe;
+  --color-accent-violet-300: #c4b5fd;
+  --color-accent-violet-400: #a78bfa;
+  --color-accent-violet-500: #8b5cf6;
+  --color-accent-violet-600: #7c3aed;
+  --color-accent-violet-700: #6d28d9;
+  --color-accent-violet-800: #5b21b6;
+  --color-accent-violet-900: #4c1d95;
+  --color-accent-violet-950: #2e1065;
+
+  /* Neutral — cool slate, the base for every surface, line and text color */
+  --color-base-0: #ffffff;
+  --color-base-50: #f8fafc;
+  --color-base-100: #f1f5f9;
+  --color-base-150: #e9eef4;
+  --color-base-200: #e2e8f0;
+  --color-base-300: #cbd5e1;
+  --color-base-400: #94a3b8;
+  --color-base-500: #64748b;
+  --color-base-600: #475569;
+  --color-base-700: #334155;
+  --color-base-800: #1e293b;
+  --color-base-850: #172131;
+  --color-base-900: #111a2b;
+  --color-base-925: #0e1524;
+  --color-base-950: #0a0f1a;
+}
+
+/* ----------------------------------------------------- 2. Semantic · light */
 :root {
+  color-scheme: light;
   --radius: 0.625rem;
 
-  /* Surfaces */
-  --background: #f8fafc;
+  /* Surfaces, from the page up */
+  --background: var(--color-base-50);
   --foreground: #0f172a;
-  --card: #ffffff;
+  --card: var(--color-base-0);
   --card-foreground: #0f172a;
-  --card-border: rgba(226, 232, 240, 0.8);
-  --card-shadow-sm:
-    0 1px 2px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.1);
-  --card-shadow-md:
-    0 1px 3px rgba(15, 23, 42, 0.08), 0 12px 32px -4px rgba(15, 23, 42, 0.16);
-  --card-shadow-lg:
-    0 2px 6px rgba(15, 23, 42, 0.1), 0 24px 56px -8px rgba(15, 23, 42, 0.26);
-  --popover: #ffffff;
+  --card-border: rgb(226 232 240 / 0.8);
+  --popover: var(--color-base-0);
   --popover-foreground: #0f172a;
+  --overlay: rgb(15 23 42 / 0.35);
 
   /* Text scale */
   --heading: #020617;
-  --foreground-secondary: #475569;
-  --foreground-muted: #94a3b8;
+  --foreground-secondary: var(--color-base-600);
+  --foreground-muted: var(--color-base-400);
 
   /* Brand */
-  --primary: #0d9488;
-  --primary-foreground: #f8fafc;
-  --primary-soft: #f0fdfa;
-  --tertiary: #0d9488;
-  --tertiary-soft: #ccfbf1;
-  --icon-surface: #ccfbf1;
+  --primary: var(--color-brand-700);
+  --primary-foreground: #ffffff;
+  --primary-soft: var(--color-brand-50);
+  --primary-soft-foreground: var(--color-brand-800);
+  --primary-border: var(--color-brand-200);
+  --tertiary: var(--color-accent-violet-600);
+  --tertiary-foreground: #ffffff;
+  --tertiary-soft: var(--color-accent-violet-100);
+  --tertiary-soft-foreground: var(--color-accent-violet-800);
+  --icon-surface: var(--color-brand-100);
 
   /* Neutral roles */
-  --secondary: #f1f5f9;
+  --secondary: var(--color-base-100);
   --secondary-foreground: #0f172a;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent: #f0fdfa;
-  --accent-foreground: #0f172a;
+  --muted: var(--color-base-100);
+  --muted-foreground: #5b6980; /* a touch darker than base-500 so it passes AA on muted surfaces too */
+  --accent: var(--color-brand-50);
+  --accent-foreground: var(--color-brand-900);
 
-  /* Status */
+  /* Status — base (solid fills, icons) · foreground (text on base)
+   *          soft (tinted backgrounds) · soft-foreground (text on soft) · border */
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --destructive-soft: #fee2e2;
-  --success: #16a34a;
-  --success-soft: #dcfce7;
+  --destructive-soft: #fef2f2;
+  --destructive-soft-foreground: #991b1b;
+  --destructive-border: #fecaca;
+
+  --success: #15803d;
+  --success-foreground: #ffffff;
+  --success-soft: #f0fdf4;
+  --success-soft-foreground: #166534;
+  --success-border: #bbf7d0;
+
   --warning: #d97706;
-  --warning-soft: #fef3c7;
+  --warning-foreground: #451a03;
+  --warning-soft: #fffbeb;
+  --warning-soft-foreground: #92400e;
+  --warning-border: #fde68a;
+
   --info: #2563eb;
-  --info-soft: #dbeafe;
+  --info-foreground: #ffffff;
+  --info-soft: #eff6ff;
+  --info-soft-foreground: #1e40af;
+  --info-border: #bfdbfe;
 
   /* Lines & focus */
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #0d9488;
+  --border: var(--color-base-200);
+  --input: var(--color-base-300);
+  --ring: var(--color-brand-500);
 
-  /* Charts */
-  --chart-1: #0d9488;
-  --chart-2: #2563eb;
-  --chart-3: #d97706;
-  --chart-4: #e11d48;
-  --chart-5: #7c3aed;
+  /* Charts — ordered for contrast between neighbours */
+  --chart-1: var(--color-brand-600);
+  --chart-2: #6366f1;
+  --chart-3: #f59e0b;
+  --chart-4: #ec4899;
+  --chart-5: #0ea5e9;
+  --chart-6: var(--color-accent-violet-500);
+  --chart-7: #84cc16;
+  --chart-8: #f97316;
 
   /* Sidebar */
-  --sidebar: #ffffff;
-  --sidebar-foreground: #0f172a;
-  --sidebar-primary: #0d9488;
-  --sidebar-primary-foreground: #f8fafc;
-  --sidebar-accent: #f0fdfa;
-  --sidebar-accent-foreground: #0f172a;
-  --sidebar-border: #e2e8f0;
-  --sidebar-ring: #0d9488;
+  --sidebar: var(--color-base-0);
+  --sidebar-foreground: var(--color-base-700);
+  --sidebar-primary: var(--color-brand-700);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--color-brand-50);
+  --sidebar-accent-foreground: var(--color-brand-900);
+  --sidebar-border: var(--color-base-200);
+  --sidebar-ring: var(--color-brand-500);
+
+  /* Elevation */
+  --card-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.06), 0 4px 12px -2px rgb(15 23 42 / 0.08);
+  --card-shadow-md: 0 1px 3px rgb(15 23 42 / 0.08), 0 12px 32px -4px rgb(15 23 42 / 0.14);
+  --card-shadow-lg: 0 2px 6px rgb(15 23 42 / 0.08), 0 24px 56px -8px rgb(15 23 42 / 0.22);
 }
 
+/* ------------------------------------------------------ 2. Semantic · dark */
 .dark {
-  /* Surfaces */
-  --background: #0b1120;
-  --foreground: #e5e7eb;
-  --card: #111827;
-  --card-foreground: #e5e7eb;
-  --card-border: rgba(51, 65, 85, 0.65);
-  --card-shadow-sm:
-    0 1px 2px rgba(0, 0, 0, 0.45), 0 4px 14px -2px rgba(0, 0, 0, 0.5);
-  --card-shadow-md:
-    0 1px 3px rgba(0, 0, 0, 0.5), 0 14px 40px -4px rgba(0, 0, 0, 0.65);
-  --card-shadow-lg:
-    0 2px 8px rgba(0, 0, 0, 0.55), 0 28px 64px -8px rgba(0, 0, 0, 0.8);
-  --popover: #111827;
-  --popover-foreground: #e5e7eb;
+  color-scheme: dark;
+
+  /* Surfaces — each layer slightly lighter, so depth reads without shadows */
+  --background: var(--color-base-950);
+  --foreground: #e6e9ef;
+  --card: var(--color-base-900);
+  --card-foreground: #e6e9ef;
+  --card-border: rgb(148 163 184 / 0.12);
+  --popover: #141e31;
+  --popover-foreground: #e6e9ef;
+  --overlay: rgb(2 6 23 / 0.6);
 
   /* Text scale */
   --heading: #f8fafc;
-  --foreground-secondary: #9ca3af;
-  --foreground-muted: #6b7280;
+  --foreground-secondary: #a3adbf;
+  --foreground-muted: #64708a;
 
   /* Brand */
-  --primary: #2dd4bf;
-  --primary-foreground: #0f172a;
-  --primary-soft: #132e32;
-  --tertiary: #5eead4;
-  --tertiary-soft: #1d3b40;
-  --icon-surface: #1d3b40;
+  --primary: var(--color-brand-400);
+  --primary-foreground: var(--color-brand-950);
+  --primary-soft: rgb(45 212 191 / 0.12);
+  --primary-soft-foreground: var(--color-brand-300);
+  --primary-border: rgb(45 212 191 / 0.3);
+  --tertiary: var(--color-accent-violet-400);
+  --tertiary-foreground: var(--color-accent-violet-950);
+  --tertiary-soft: rgb(167 139 250 / 0.14);
+  --tertiary-soft-foreground: var(--color-accent-violet-300);
+  --icon-surface: rgb(45 212 191 / 0.14);
 
   /* Neutral roles */
-  --secondary: #172131;
-  --secondary-foreground: #e5e7eb;
-  --muted: #172131;
-  --muted-foreground: #9ca3af;
-  --accent: #132e32;
-  --accent-foreground: #e5e7eb;
+  --secondary: var(--color-base-850);
+  --secondary-foreground: #e6e9ef;
+  --muted: var(--color-base-850);
+  --muted-foreground: #8b95a8;
+  --accent: rgb(45 212 191 / 0.1);
+  --accent-foreground: var(--color-brand-200);
 
-  /* Status */
-  --destructive: #fb7185;
-  --destructive-foreground: #0f172a;
-  --destructive-soft: #442530;
+  /* Status — soft colors are translucent so they sit on any dark surface */
+  --destructive: #f87171;
+  --destructive-foreground: #2a0a0a;
+  --destructive-soft: rgb(248 113 113 / 0.12);
+  --destructive-soft-foreground: #fca5a5;
+  --destructive-border: rgb(248 113 113 / 0.3);
+
   --success: #4ade80;
-  --success-soft: #183a31;
+  --success-foreground: #052e16;
+  --success-soft: rgb(74 222 128 / 0.12);
+  --success-soft-foreground: #86efac;
+  --success-border: rgb(74 222 128 / 0.3);
+
   --warning: #fbbf24;
-  --warning-soft: #43351f;
+  --warning-foreground: #451a03;
+  --warning-soft: rgb(251 191 36 / 0.12);
+  --warning-soft-foreground: #fcd34d;
+  --warning-border: rgb(251 191 36 / 0.3);
+
   --info: #60a5fa;
-  --info-soft: #1e3453;
+  --info-foreground: #0b1a33;
+  --info-soft: rgb(96 165 250 / 0.12);
+  --info-soft-foreground: #93c5fd;
+  --info-border: rgb(96 165 250 / 0.3);
 
   /* Lines & focus */
-  --border: #293548;
-  --input: #293548;
-  --ring: #2dd4bf;
+  --border: #222d42;
+  --input: #2c3850;
+  --ring: var(--color-brand-400);
 
-  /* Charts */
-  --chart-1: #2dd4bf;
-  --chart-2: #60a5fa;
+  /* Charts — lifted for dark backgrounds */
+  --chart-1: var(--color-brand-400);
+  --chart-2: #818cf8;
   --chart-3: #fbbf24;
-  --chart-4: #fb7185;
-  --chart-5: #a78bfa;
+  --chart-4: #f472b6;
+  --chart-5: #38bdf8;
+  --chart-6: var(--color-accent-violet-400);
+  --chart-7: #a3e635;
+  --chart-8: #fb923c;
 
   /* Sidebar */
-  --sidebar: #0d1524;
-  --sidebar-foreground: #e5e7eb;
-  --sidebar-primary: #2dd4bf;
-  --sidebar-primary-foreground: #0f172a;
-  --sidebar-accent: #132e32;
-  --sidebar-accent-foreground: #e5e7eb;
-  --sidebar-border: #293548;
-  --sidebar-ring: #2dd4bf;
+  --sidebar: var(--color-base-925);
+  --sidebar-foreground: #c3cad6;
+  --sidebar-primary: var(--color-brand-400);
+  --sidebar-primary-foreground: var(--color-brand-950);
+  --sidebar-accent: rgb(45 212 191 / 0.1);
+  --sidebar-accent-foreground: var(--color-brand-200);
+  --sidebar-border: #1c2638;
+  --sidebar-ring: var(--color-brand-400);
+
+  /* Elevation — darker and wider; a hairline highlight keeps edges visible */
+  --card-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 14px -2px rgb(0 0 0 / 0.45);
+  --card-shadow-md: 0 1px 3px rgb(0 0 0 / 0.45), 0 14px 40px -4px rgb(0 0 0 / 0.6);
+  --card-shadow-lg: 0 2px 8px rgb(0 0 0 / 0.5), 0 28px 64px -8px rgb(0 0 0 / 0.75);
 }
 
+/* --------------------------------------------------------- 3. Utilities */
 @theme inline {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --font-heading: var(--font-sans);
 
+  /* Surfaces */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -171,18 +276,26 @@
   --color-card-border: var(--card-border);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+  --color-overlay: var(--overlay);
 
+  /* Text */
   --color-heading: var(--heading);
   --color-foreground-secondary: var(--foreground-secondary);
   --color-foreground-muted: var(--foreground-muted);
 
+  /* Brand */
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary-soft: var(--primary-soft);
+  --color-primary-soft-foreground: var(--primary-soft-foreground);
+  --color-primary-border: var(--primary-border);
   --color-tertiary: var(--tertiary);
+  --color-tertiary-foreground: var(--tertiary-foreground);
   --color-tertiary-soft: var(--tertiary-soft);
+  --color-tertiary-soft-foreground: var(--tertiary-soft-foreground);
   --color-icon-surface: var(--icon-surface);
 
+  /* Neutral roles */
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -190,26 +303,44 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
 
+  /* Status */
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-destructive-soft: var(--destructive-soft);
+  --color-destructive-soft-foreground: var(--destructive-soft-foreground);
+  --color-destructive-border: var(--destructive-border);
   --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
   --color-success-soft: var(--success-soft);
+  --color-success-soft-foreground: var(--success-soft-foreground);
+  --color-success-border: var(--success-border);
   --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   --color-warning-soft: var(--warning-soft);
+  --color-warning-soft-foreground: var(--warning-soft-foreground);
+  --color-warning-border: var(--warning-border);
   --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
   --color-info-soft: var(--info-soft);
+  --color-info-soft-foreground: var(--info-soft-foreground);
+  --color-info-border: var(--info-border);
 
+  /* Lines & focus */
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
 
+  /* Charts */
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --color-chart-7: var(--chart-7);
+  --color-chart-8: var(--chart-8);
 
+  /* Sidebar */
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -219,10 +350,12 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
+  /* Elevation */
   --shadow-card-sm: var(--card-shadow-sm);
   --shadow-card: var(--card-shadow-md);
   --shadow-card-lg: var(--card-shadow-lg);
 
+  /* Radius — change --radius to make the whole UI rounder or sharper */
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -232,14 +365,37 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Brand gradient for logos, hero blocks and highlight icons: `bg-brand-gradient`. */
+@utility bg-brand-gradient {
+  background-image: linear-gradient(
+    135deg,
+    var(--color-brand-500) 0%,
+    var(--color-brand-700) 55%,
+    var(--color-accent-violet-600) 130%
+  );
+}
+
+/* ------------------------------------------------------------------ Base */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   html {
-    @apply font-sans;
+    @apply font-sans antialiased;
+    text-rendering: optimizeLegibility;
   }
   body {
     @apply bg-background text-foreground;
+  }
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+  }
+  /* Thin, theme-aware scrollbars (Firefox + Chromium 121+). */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-base-300) transparent;
+  }
+  .dark * {
+    scrollbar-color: var(--color-base-700) transparent;
   }
 }

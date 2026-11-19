@@ -229,7 +229,22 @@ Open **`/ui-kit`** in the dev server to see every component and its variants (so
 | `DsSkeleton`, `DsSeparator` | Placeholders and dividers |
 | `DsLoading` | The one loading indicator for the whole app; `fullScreen` for page-level loading |
 
-**Colors** are design tokens in `globals.css` (`--primary`, `--muted-foreground`, `--success-soft`, …) with light and dark values. Each one is a Tailwind utility (`bg-primary`, `text-muted-foreground`, `bg-success-soft`), so use the utilities and never hard-code colors. The names follow shadcn's convention, so components copied from shadcn pick up the brand automatically.
+**Colors** live in `src/app/globals.css` in three layers (see the **Colors** section of `/ui-kit`):
+
+| Layer | Examples | Use for |
+| --- | --- | --- |
+| Palette scales (same in both themes) | `bg-brand-50` … `bg-brand-950`, `bg-accent-violet-*`, `bg-base-*` | Illustrations, one-off accents |
+| Semantic tokens (switch with the theme) | `bg-background`, `bg-card`, `text-muted-foreground`, `border-border`, `bg-overlay` | Everything else |
+| Intents, each with solid + soft pairs | `primary`, `tertiary`, `success`, `warning`, `info`, `destructive` | Buttons, badges, alerts |
+
+Every intent comes as matching pairs, so text is always readable (WCAG AA, 4.5:1, in light and dark):
+
+```tsx
+<div className="bg-success text-success-foreground">Solid</div>
+<div className="border border-success-border bg-success-soft text-success-soft-foreground">Soft</div>
+```
+
+There are also `chart-1` … `chart-8`, `shadow-card-sm` / `shadow-card` / `shadow-card-lg`, and `bg-brand-gradient`. `DsBadge` has a variant per intent (`brand`, `tertiary`, `success`, `warning`, `info`, `destructive`). Use these classes, never hard-coded colors. The semantic names follow shadcn's convention, so components copied from shadcn pick up the brand automatically. To rebrand, change the `--color-brand-*` scale and the `--primary*` tokens.
 
 **Text direction:** set `APP_DIR` (and `APP_LANG`) in `src/constants/locale.ts`. `<html dir>`, Radix menus and popovers, and toasts all follow it. Use logical classes (`ms-*`, `ps-*`, `start-*`, `text-start`) instead of `ml-*` / `left-*` so layouts flip correctly.
 

@@ -167,6 +167,7 @@ import {
   type DsTypographyColor,
 } from "@/src/components";
 import { useAppForm } from "@/src/hooks";
+import { cn } from "@/src/lib/utils";
 import { useThemeStore } from "@/src/stores";
 
 /* -------------------------------------------------------------------------- */
@@ -342,7 +343,129 @@ const frameworks: DsComboboxOption[] = [
   { value: "angular", label: "Angular", disabled: true },
 ];
 
+/* Color swatches — class names are written out in full so Tailwind generates them. */
+const surfaceTokens = [
+  { name: "background", className: "bg-background" },
+  { name: "card", className: "bg-card" },
+  { name: "popover", className: "bg-popover" },
+  { name: "muted", className: "bg-muted" },
+  { name: "secondary", className: "bg-secondary" },
+  { name: "accent", className: "bg-accent" },
+  { name: "border", className: "bg-border" },
+  { name: "input", className: "bg-input" },
+];
+
+const textTokens = [
+  { name: "heading", className: "text-heading" },
+  { name: "foreground", className: "text-foreground" },
+  { name: "foreground-secondary", className: "text-foreground-secondary" },
+  { name: "muted-foreground", className: "text-muted-foreground" },
+  { name: "foreground-muted", className: "text-foreground-muted" },
+];
+
+const intentTokens = [
+  {
+    name: "primary",
+    solid: "bg-primary text-primary-foreground",
+    soft: "border-primary-border bg-primary-soft text-primary-soft-foreground",
+  },
+  {
+    name: "tertiary",
+    solid: "bg-tertiary text-tertiary-foreground",
+    soft: "border-transparent bg-tertiary-soft text-tertiary-soft-foreground",
+  },
+  {
+    name: "success",
+    solid: "bg-success text-success-foreground",
+    soft: "border-success-border bg-success-soft text-success-soft-foreground",
+  },
+  {
+    name: "warning",
+    solid: "bg-warning text-warning-foreground",
+    soft: "border-warning-border bg-warning-soft text-warning-soft-foreground",
+  },
+  {
+    name: "info",
+    solid: "bg-info text-info-foreground",
+    soft: "border-info-border bg-info-soft text-info-soft-foreground",
+  },
+  {
+    name: "destructive",
+    solid: "bg-destructive text-destructive-foreground",
+    soft: "border-destructive-border bg-destructive-soft text-destructive-soft-foreground",
+  },
+];
+
+const brandScale = [
+  ["50", "bg-brand-50"],
+  ["100", "bg-brand-100"],
+  ["200", "bg-brand-200"],
+  ["300", "bg-brand-300"],
+  ["400", "bg-brand-400"],
+  ["500", "bg-brand-500"],
+  ["600", "bg-brand-600"],
+  ["700", "bg-brand-700"],
+  ["800", "bg-brand-800"],
+  ["900", "bg-brand-900"],
+  ["950", "bg-brand-950"],
+] as const;
+
+const violetScale = [
+  ["50", "bg-accent-violet-50"],
+  ["100", "bg-accent-violet-100"],
+  ["200", "bg-accent-violet-200"],
+  ["300", "bg-accent-violet-300"],
+  ["400", "bg-accent-violet-400"],
+  ["500", "bg-accent-violet-500"],
+  ["600", "bg-accent-violet-600"],
+  ["700", "bg-accent-violet-700"],
+  ["800", "bg-accent-violet-800"],
+  ["900", "bg-accent-violet-900"],
+  ["950", "bg-accent-violet-950"],
+] as const;
+
+const baseScale = [
+  ["0", "bg-base-0"],
+  ["50", "bg-base-50"],
+  ["100", "bg-base-100"],
+  ["200", "bg-base-200"],
+  ["300", "bg-base-300"],
+  ["400", "bg-base-400"],
+  ["500", "bg-base-500"],
+  ["600", "bg-base-600"],
+  ["700", "bg-base-700"],
+  ["800", "bg-base-800"],
+  ["900", "bg-base-900"],
+  ["950", "bg-base-950"],
+] as const;
+
+const chartTokens = [
+  "bg-chart-1",
+  "bg-chart-2",
+  "bg-chart-3",
+  "bg-chart-4",
+  "bg-chart-5",
+  "bg-chart-6",
+  "bg-chart-7",
+  "bg-chart-8",
+];
+
+const ColorScale = ({ label, scale }: { label: string; scale: readonly (readonly [string, string])[] }) => (
+  <div className="flex flex-col gap-2">
+    <DsTypography variant="caption">{label}</DsTypography>
+    <div className="grid grid-cols-6 overflow-hidden rounded-xl border border-border sm:grid-cols-12">
+      {scale.map(([step, className]) => (
+        <div key={step} className="flex flex-col">
+          <div className={cn("h-12", className)} />
+          <span className="bg-card py-1 text-center font-mono text-[10px] text-muted-foreground">{step}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 const sections = [
+  ["colors", "Colors"],
   ["typography", "Typography"],
   ["box", "Box"],
   ["buttons", "Buttons"],
@@ -566,6 +689,68 @@ export default function UiKitPage() {
         ))}
       </nav>
 
+      {/* Colors */}
+      <Section
+        id="colors"
+        title="Colors"
+        description="Semantic tokens switch with the theme — toggle it to compare. Text-on-color pairs meet WCAG AA in both themes."
+      >
+        <Row label="Surfaces">
+          <div className="grid w-full grid-cols-2 gap-3 sm:grid-cols-4">
+            {surfaceTokens.map((token) => (
+              <div key={token.name} className="flex flex-col gap-1.5">
+                <div className={cn("h-14 rounded-lg border border-border", token.className)} />
+                <span className="font-mono text-xs text-muted-foreground">{token.name}</span>
+              </div>
+            ))}
+          </div>
+        </Row>
+
+        <Row label="Text">
+          <div className="flex w-full flex-wrap gap-x-6 gap-y-2">
+            {textTokens.map((token) => (
+              <span key={token.name} className={cn("text-sm font-medium", token.className)}>
+                {token.name}
+              </span>
+            ))}
+          </div>
+        </Row>
+
+        <Row label="Intents · solid / soft">
+          <div className="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {intentTokens.map((token) => (
+              <div key={token.name} className="overflow-hidden rounded-xl border border-border">
+                <div className={cn("flex h-12 items-center px-3 text-sm font-medium", token.solid)}>
+                  {token.name}
+                </div>
+                <div className={cn("flex h-12 items-center border-t px-3 text-sm font-medium", token.soft)}>
+                  {token.name}-soft
+                </div>
+              </div>
+            ))}
+          </div>
+        </Row>
+
+        <ColorScale label="brand-*" scale={brandScale} />
+        <ColorScale label="accent-violet-*" scale={violetScale} />
+        <ColorScale label="base-* (neutral)" scale={baseScale} />
+
+        <div className="grid gap-6 md:grid-cols-2">
+          <Row label="chart-1 … chart-8">
+            <div className="flex h-12 w-full overflow-hidden rounded-xl">
+              {chartTokens.map((className) => (
+                <div key={className} className={cn("flex-1", className)} />
+              ))}
+            </div>
+          </Row>
+          <Row label="bg-brand-gradient">
+            <div className="flex h-12 w-full items-center rounded-xl bg-brand-gradient px-4 text-sm font-medium text-white">
+              Brand gradient
+            </div>
+          </Row>
+        </div>
+      </Section>
+
       {/* Typography */}
       <Section
         id="typography"
@@ -692,6 +877,11 @@ export default function UiKitPage() {
         <Row label="variant">
           <DsBadge>Default</DsBadge>
           <DsBadge variant="secondary">Secondary</DsBadge>
+          <DsBadge variant="brand">Brand</DsBadge>
+          <DsBadge variant="tertiary">Tertiary</DsBadge>
+          <DsBadge variant="success">Success</DsBadge>
+          <DsBadge variant="warning">Warning</DsBadge>
+          <DsBadge variant="info">Info</DsBadge>
           <DsBadge variant="destructive">Destructive</DsBadge>
           <DsBadge variant="outline">Outline</DsBadge>
           <DsBadge variant="ghost">Ghost</DsBadge>

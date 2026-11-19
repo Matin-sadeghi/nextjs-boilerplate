@@ -153,7 +153,7 @@ export function AdminSidebar() {
                 href={NAV_SECTIONS[0]?.items[0]?.href ?? "/"}
                 onClick={closeOnMobile}
               >
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-brand-gradient text-white shadow-card-sm">
                   <ShieldCheck className="size-4" />
                 </div>
                 <div className="grid flex-1 text-start text-sm leading-tight">
