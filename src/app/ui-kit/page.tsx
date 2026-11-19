@@ -74,14 +74,7 @@ import {
   DsDataTable,
   DsDatePicker,
   DsDescription,
-  DsDialog,
-  DsDialogClose,
-  DsDialogContent,
-  DsDialogDescription,
-  DsDialogFooter,
-  DsDialogHeader,
-  DsDialogTitle,
-  DsDialogTrigger,
+  DsCustomDialog,
   DsDirectionProvider,
   DsDropdownMenu,
   DsDropdownMenuCheckboxItem,
@@ -1309,33 +1302,19 @@ export default function UiKitPage() {
       >
         <div className="flex flex-wrap items-center gap-2">
           {/* Dialog */}
-          <DsDialog>
-            <DsDialogTrigger asChild>
-              <DsButton variant="outline">Open dialog</DsButton>
-            </DsDialogTrigger>
-            <DsDialogContent>
-              <DsDialogHeader>
-                <DsDialogTitle>Edit profile</DsDialogTitle>
-                <DsDialogDescription>
-                  Radix handles focus trap, Esc and scroll lock.
-                </DsDialogDescription>
-              </DsDialogHeader>
-              <DsField>
-                <DsLabel htmlFor="dialog-name">Name</DsLabel>
-                <DsInput id="dialog-name" defaultValue="Ada Lovelace" />
-              </DsField>
-              <DsDialogFooter>
-                <DsDialogClose asChild>
-                  <DsButton variant="outline">Cancel</DsButton>
-                </DsDialogClose>
-                <DsDialogClose asChild>
-                  <DsButton onClick={() => toast.success("Profile saved")}>
-                    Save
-                  </DsButton>
-                </DsDialogClose>
-              </DsDialogFooter>
-            </DsDialogContent>
-          </DsDialog>
+          <DsCustomDialog
+            openText="Open dialog"
+            title="Edit profile"
+            description="Radix handles focus trap, Esc and scroll lock."
+            confirmText="Save"
+            showCloseButton={true}
+            onConfirm={() => toast.success("Profile saved")}
+          >
+            <DsField>
+              <DsLabel htmlFor="dialog-name">Name</DsLabel>
+              <DsInput id="dialog-name" defaultValue="Ada Lovelace" />
+            </DsField>
+          </DsCustomDialog>
 
           {/* Popover */}
           <DsPopover>

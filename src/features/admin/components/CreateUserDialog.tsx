@@ -4,14 +4,7 @@ import { UserPlus } from "lucide-react";
 
 import {
   DsButton,
-  DsDialog,
-  DsDialogClose,
-  DsDialogContent,
-  DsDialogDescription,
-  DsDialogFooter,
-  DsDialogHeader,
-  DsDialogTitle,
-  DsDialogTrigger,
+  DsCustomDialog,
   DsForm,
   DsFormInput,
   DsFormSelect,
@@ -23,6 +16,8 @@ import {
   createUserSchema,
   type CreateUserFormData,
 } from "../types";
+
+const FORM_ID = "create-user-form";
 
 export function CreateUserDialog({
   onCreate,
@@ -38,63 +33,51 @@ export function CreateUserDialog({
   });
 
   return (
-    <DsDialog
+    <DsCustomDialog
       open={open}
       onOpenChange={(next) => {
         setOpen(next);
         if (!next) form.reset();
       }}
-    >
-      <DsDialogTrigger asChild>
+      trigger={
         <DsButton>
           <UserPlus /> Add user
         </DsButton>
-      </DsDialogTrigger>
-      <DsDialogContent className="sm:max-w-md">
-        <DsDialogHeader>
-          <DsDialogTitle>Add user</DsDialogTitle>
-          <DsDialogDescription>
-            They will get access with the role you choose.
-          </DsDialogDescription>
-        </DsDialogHeader>
-        <DsForm
-          form={form}
-          onSubmit={(data) => {
-            onCreate(data);
-            setOpen(false);
-            form.reset();
-          }}
-          className="flex flex-col gap-4"
-        >
-          <div className="grid gap-4 sm:grid-cols-2">
-            <DsFormInput
-              name="firstName"
-              label="First name"
-              autoComplete="off"
-            />
-            <DsFormInput name="lastName" label="Last name" autoComplete="off" />
-          </div>
-          <DsFormInput
-            name="email"
-            type="email"
-            label="Email"
-            autoComplete="off"
-          />
-          <DsFormSelect
-            name="role"
-            label="Role"
-            placeholder="Select a role"
-            options={ADMIN_ROLE_OPTIONS}
-          />
-          <DsFormSwitch name="sendInvite" label="Send invitation email" />
-          <DsDialogFooter>
-            <DsDialogClose asChild>
-              <DsButton variant="outline">Cancel</DsButton>
-            </DsDialogClose>
-            <DsButton type="submit">Add user</DsButton>
-          </DsDialogFooter>
-        </DsForm>
-      </DsDialogContent>
-    </DsDialog>
+      }
+      title="Add user"
+      description="They will get access with the role you choose."
+      confirmText="Add user"
+      formId={FORM_ID}
+      className="sm:max-w-md"
+    >
+      <DsForm
+        id={FORM_ID}
+        form={form}
+        onSubmit={(data) => {
+          onCreate(data);
+          setOpen(false);
+          form.reset();
+        }}
+        className="flex flex-col gap-4"
+      >
+        <div className="grid gap-4 sm:grid-cols-2">
+          <DsFormInput name="firstName" label="First name" autoComplete="off" />
+          <DsFormInput name="lastName" label="Last name" autoComplete="off" />
+        </div>
+        <DsFormInput
+          name="email"
+          type="email"
+          label="Email"
+          autoComplete="off"
+        />
+        <DsFormSelect
+          name="role"
+          label="Role"
+          placeholder="Select a role"
+          options={ADMIN_ROLE_OPTIONS}
+        />
+        <DsFormSwitch name="sendInvite" label="Send invitation email" />
+      </DsForm>
+    </DsCustomDialog>
   );
 }
