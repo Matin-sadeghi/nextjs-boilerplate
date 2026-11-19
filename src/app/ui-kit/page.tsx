@@ -69,6 +69,8 @@ import {
   DsCommandList,
   DsCommandSeparator,
   DsCommandShortcut,
+  DsCustomTable,
+  type DsCustomTableColumn,
   DsDataTable,
   DsDatePicker,
   DsDescription,
@@ -240,6 +242,50 @@ const columns = col.columns([
     ),
   }),
 ]);
+
+// DsCustomTable: plain column objects, no column helper needed.
+const customColumns: DsCustomTableColumn<User>[] = [
+  { name: "id", header: "#", align: "end", width: "4rem" },
+  { name: "name", header: "Name" },
+  { name: "email", header: "Email" },
+  {
+    name: "role",
+    header: "Role",
+    render: (u) => (
+      <DsBadge variant={u.role === "admin" ? "default" : "secondary"}>
+        {u.role}
+      </DsBadge>
+    ),
+  },
+  {
+    name: "createdAt",
+    header: "Created",
+    render: (u) => u.createdAt.toLocaleDateString(),
+  },
+];
+
+function UserRowMenu({ user }: { user: User }) {
+  return (
+    <DsDropdownMenu>
+      <DsDropdownMenuTrigger asChild>
+        <DsButton variant="ghost" size="icon-sm" aria-label="Row actions">
+          <MoreHorizontal />
+        </DsButton>
+      </DsDropdownMenuTrigger>
+      <DsDropdownMenuContent align="end">
+        <DsDropdownMenuItem onSelect={() => toast(`Edit ${user.name}`)}>
+          <Pencil /> Edit
+        </DsDropdownMenuItem>
+        <DsDropdownMenuItem
+          variant="destructive"
+          onSelect={() => toast(`Delete ${user.name}`)}
+        >
+          <Trash2 /> Delete
+        </DsDropdownMenuItem>
+      </DsDropdownMenuContent>
+    </DsDropdownMenu>
+  );
+}
 
 const invoices = [
   { id: "INV-001", status: "Paid", method: "Credit card", amount: 250 },
@@ -499,6 +545,7 @@ const sections = [
   ["loading", "Loading"],
   ["table", "Table"],
   ["data-table", "Data table"],
+  ["custom-table", "Custom table"],
   ["rtl", "RTL"],
 ] as const;
 
@@ -631,6 +678,7 @@ export default function UiKitPage() {
 
   // Data table
   const [tableLoading, setTableLoading] = useState(false);
+  const [tablePage, setTablePage] = useState(1);
 
   // Form
   const form = useAppForm(profileSchema, {
@@ -1853,6 +1901,43 @@ export default function UiKitPage() {
             data={noUsers}
             paginated={false}
             labels={{ empty: "No users yet." }}
+            className="w-full"
+          />
+        </Row>
+      </Section>
+
+      {/* Custom table */}
+      <Section
+        id="custom-table"
+        title="DsCustomTable"
+        description="Declarative columns (name, header, render), actions column, pagination, loading, empty state, row click."
+      >
+        <DsCustomTable
+          columns={customColumns}
+          data={users}
+          isLoading={tableLoading}
+          onRowClick={(u) => toast(`Clicked ${u.name}`)}
+          actions={{ render: (u) => <UserRowMenu user={u} /> }}
+          pagination={{
+            page: tablePage,
+            pageSize: 10,
+            entityLabel: "users",
+            onPageChange: setTablePage,
+          }}
+        />
+        <Row label="loading with no data → skeleton">
+          <DsCustomTable
+            columns={customColumns}
+            data={noUsers}
+            isLoading
+            className="w-full"
+          />
+        </Row>
+        <Row label="empty state">
+          <DsCustomTable
+            columns={customColumns}
+            data={noUsers}
+            emptyMessage="No users yet."
             className="w-full"
           />
         </Row>

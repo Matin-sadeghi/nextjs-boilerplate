@@ -12,7 +12,7 @@ It works with any backend (Node, Django, Laravel, Go, …): point `NEXT_PUBLIC_A
 | Language | TypeScript |
 | Styling | Tailwind CSS 4 + design tokens in `src/app/globals.css` |
 | Components | [shadcn/ui](https://ui.shadcn.com) (Radix UI primitives), copied into `src/components` as `Ds*` components |
-| Tables | TanStack Table 9 (`DsDataTable`) |
+| Tables | TanStack Table 9 (`DsDataTable`), declarative `DsCustomTable` |
 | Server state | TanStack Query 5 |
 | Client state | Zustand 5 |
 | Forms | React Hook Form + Zod 4 |
@@ -226,6 +226,7 @@ Open **`/ui-kit`** in the dev server to see every component and its variants (so
 | `DsTabs`, `DsAccordion` | Disclosure |
 | `DsCalendar` | Date picker calendar (react-day-picker) |
 | `DsTable` / `DsDataTable` | Plain table primitives / TanStack Table with sorting, pagination, loading and empty states |
+| `DsCustomTable` / `DsPagination` | Data table with plain `columns` (`name`, `header`, `render`), `actions`, `pagination` (server or client), loading and empty states / numbered pager |
 | `DsSkeleton`, `DsSeparator` | Placeholders and dividers |
 | `DsLoading` | The one loading indicator for the whole app; `fullScreen` for page-level loading |
 

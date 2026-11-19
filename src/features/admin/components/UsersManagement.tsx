@@ -1,16 +1,8 @@
 "use client";
-import { useMemo, useState } from "react";
-import {
-  MoreHorizontal,
-  Pencil,
-  ShieldBan,
-  ShieldCheck,
-  Trash2,
-} from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import {
-  createDsColumnHelper,
   DsAlertDialog,
   DsAlertDialogAction,
   DsAlertDialogCancel,
@@ -19,114 +11,35 @@ import {
   DsAlertDialogFooter,
   DsAlertDialogHeader,
   DsAlertDialogTitle,
-  DsButton,
-  DsDataTable,
-  DsDropdownMenu,
-  DsDropdownMenuContent,
-  DsDropdownMenuItem,
-  DsDropdownMenuSeparator,
-  DsDropdownMenuTrigger,
+  DsCustomTable,
   DsPageHeader,
 } from "@/src/components";
 import { DEMO_USERS } from "../data/demo-users";
 import type { AdminUser, CreateUserFormData } from "../types";
-import { formatDate, fullName } from "../utils";
+import { fullName } from "../utils";
 import { CreateUserDialog } from "./CreateUserDialog";
-import { UserCell, UserRoleBadge, UserStatusBadge } from "./UserBadges";
+import { UserRowActions } from "./UserRowActions";
+import { USER_TABLE_COLUMNS } from "./UserTableColumns";
 
-const col = createDsColumnHelper<AdminUser>();
+const PAGE_SIZE = 10;
 
 /** Users list with add, suspend/activate and delete. State is local demo data — swap for API mutations. */
 export function UsersManagement() {
   const [users, setUsers] = useState<AdminUser[]>(DEMO_USERS);
+  const [page, setPage] = useState(1);
   const [userToDelete, setUserToDelete] = useState<AdminUser | null>(null);
 
-  const columns = useMemo(
-    () =>
-      col.columns([
-        col.accessor((user) => fullName(user), {
-          id: "name",
-          header: "User",
-          cell: ({ row }) => <UserCell user={row.original} />,
-        }),
-        col.accessor("role", {
-          header: "Role",
-          cell: ({ getValue }) => <UserRoleBadge role={getValue()} />,
-        }),
-        col.accessor("status", {
-          header: "Status",
-          cell: ({ getValue }) => <UserStatusBadge status={getValue()} />,
-        }),
-        col.accessor("joinedAt", {
-          header: "Joined",
-          cell: ({ getValue }) => (
-            <span className="text-muted-foreground">
-              {formatDate(getValue())}
-            </span>
-          ),
-        }),
-        col.display({
-          id: "actions",
-          meta: { align: "end", cellClassName: "w-12" },
-          cell: ({ row }) => {
-            const user = row.original;
-            const suspended = user.status === "suspended";
-            return (
-              <DsDropdownMenu>
-                <DsDropdownMenuTrigger asChild>
-                  <DsButton
-                    variant="ghost"
-                    size="icon-sm"
-                    aria-label={`Actions for ${fullName(user)}`}
-                  >
-                    <MoreHorizontal />
-                  </DsButton>
-                </DsDropdownMenuTrigger>
-                <DsDropdownMenuContent align="end">
-                  <DsDropdownMenuItem
-                    onSelect={() =>
-                      toast(
-                        `Edit ${fullName(user)} — connect this to an edit form.`,
-                      )
-                    }
-                  >
-                    <Pencil /> Edit
-                  </DsDropdownMenuItem>
-                  <DsDropdownMenuItem
-                    onSelect={() => {
-                      setUsers((list) =>
-                        list.map((item) =>
-                          item.id === user.id
-                            ? {
-                                ...item,
-                                status: suspended ? "active" : "suspended",
-                              }
-                            : item,
-                        ),
-                      );
-                      toast.success(
-                        `${fullName(user)} ${suspended ? "activated" : "suspended"}`,
-                      );
-                    }}
-                  >
-                    {suspended ? <ShieldCheck /> : <ShieldBan />}
-                    {suspended ? "Activate" : "Suspend"}
-                  </DsDropdownMenuItem>
-                  <DsDropdownMenuSeparator />
-                  <DsDropdownMenuItem
-                    variant="destructive"
-                    onSelect={() => setUserToDelete(user)}
-                  >
-                    <Trash2 /> Delete
-                  </DsDropdownMenuItem>
-                </DsDropdownMenuContent>
-              </DsDropdownMenu>
-            );
-          },
-        }),
-      ]),
-    [],
-  );
+  const toggleSuspend = (user: AdminUser) => {
+    const suspended = user.status === "suspended";
+    setUsers((list) =>
+      list.map((item) =>
+        item.id === user.id
+          ? { ...item, status: suspended ? "active" : "suspended" }
+          : item,
+      ),
+    );
+    toast.success(`${fullName(user)} ${suspended ? "activated" : "suspended"}`);
+  };
 
   const handleCreate = (data: CreateUserFormData) => {
     const user: AdminUser = {
@@ -152,10 +65,27 @@ export function UsersManagement() {
         actions={<CreateUserDialog onCreate={handleCreate} />}
       />
 
-      <DsDataTable
-        columns={columns}
+      <DsCustomTable
+        columns={USER_TABLE_COLUMNS}
         data={users}
-        getRowId={(user) => user.id}
+        actions={{
+          render: (user) => (
+            <UserRowActions
+              user={user}
+              onEdit={(u) =>
+                toast(`Edit ${fullName(u)} — connect this to an edit form.`)
+              }
+              onToggleSuspend={toggleSuspend}
+              onDelete={setUserToDelete}
+            />
+          ),
+        }}
+        pagination={{
+          page,
+          pageSize: PAGE_SIZE,
+          entityLabel: "users",
+          onPageChange: setPage,
+        }}
       />
 
       <DsAlertDialog

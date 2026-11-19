@@ -25,6 +25,7 @@ export * from "./Label";
 export * from "./Layouts";
 export * from "./Loading";
 export * from "./PageHeader";
+export * from "./Pagination";
 export * from "./Popover";
 export * from "./RadioGroup";
 export * from "./Select";
