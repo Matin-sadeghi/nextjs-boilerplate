@@ -11,6 +11,7 @@ export * from "./Button";
 export * from "./Calendar";
 export * from "./Checkbox";
 export * from "./Combobox";
+export * from "./DatePicker";
 export * from "./Command";
 export * from "./Dialog";
 export * from "./Direction";

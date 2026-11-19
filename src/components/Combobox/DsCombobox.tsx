@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
+import { useState, type FocusEventHandler, type ReactNode, type Ref } from 'react';
 import { Check, ChevronsUpDown } from 'lucide-react';
 
 import { cn } from '@/src/lib/utils';
@@ -40,6 +40,10 @@ export interface DsComboboxProps {
   className?: string;
   /** Class for the dropdown panel. It matches the trigger width by default. */
   contentClassName?: string;
+  /** Forwarded to the trigger button (react-hook-form uses it to focus the field on error). */
+  ref?: Ref<HTMLButtonElement>;
+  onBlur?: FocusEventHandler<HTMLButtonElement>;
+  'aria-describedby'?: string;
 }
 
 /**
@@ -59,6 +63,9 @@ export function DsCombobox({
   id,
   className,
   contentClassName,
+  ref,
+  onBlur,
+  'aria-describedby': ariaDescribedBy,
 }: DsComboboxProps) {
   const [open, setOpen] = useState(false);
   const selected = options.find((option) => option.value === value);
@@ -67,7 +74,10 @@ export function DsCombobox({
     <DsPopover open={open} onOpenChange={setOpen}>
       <DsPopoverTrigger asChild>
         <DsButton
+          ref={ref}
           id={id}
+          onBlur={onBlur}
+          aria-describedby={ariaDescribedBy}
           variant="outline"
           role="combobox"
           aria-expanded={open}

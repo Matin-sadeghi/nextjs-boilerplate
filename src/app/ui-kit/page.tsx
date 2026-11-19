@@ -71,6 +71,7 @@ import {
   DsCommandSeparator,
   DsCommandShortcut,
   DsDataTable,
+  DsDatePicker,
   DsDescription,
   DsDialog,
   DsDialogClose,
@@ -106,7 +107,14 @@ import {
   DsFieldGroup,
   DsFieldset,
   DsForm,
+  DsFormCheckbox,
+  DsFormCombobox,
+  DsFormDatePicker,
   DsFormInput,
+  DsFormRadioGroup,
+  DsFormSelect,
+  DsFormSwitch,
+  DsFormTextarea,
   DsInput,
   DsLabel,
   DsLegend,
@@ -241,7 +249,34 @@ const invoices = [
 const profileSchema = z.object({
   fullName: z.string().trim().min(2, "Name must be at least 2 characters"),
   email: z.email("Enter a valid email"),
+  bio: z.string().max(160, "Keep it under 160 characters"),
+  role: z.string().min(1, "Pick a role"),
+  framework: z.string({ error: "Pick a framework" }),
+  plan: z.enum(["free", "pro", "team"], { error: "Choose a plan" }),
+  birthday: z
+    .date({ error: "Pick your birthday" })
+    .refine((date) => date < new Date(), "Birthday must be in the past"),
+  newsletter: z.boolean(),
+  terms: z.boolean().refine(Boolean, "You must accept the terms"),
 });
+
+type ProfileFormData = z.infer<typeof profileSchema>;
+
+const roleOptions = [
+  { value: "admin", label: "Admin" },
+  { value: "editor", label: "Editor" },
+  { value: "viewer", label: "Viewer" },
+  { value: "owner", label: "Owner (only one allowed)", disabled: true },
+];
+
+const planOptions = [
+  { value: "free", label: "Free", description: "Up to 3 projects." },
+  { value: "pro", label: "Pro", description: "Unlimited projects and priority support." },
+  { value: "team", label: "Team", description: "Everything in Pro, plus shared workspaces." },
+];
+
+const birthdayStartMonth = new Date(1940, 0);
+const birthdayEndMonth = new Date(2030, 11);
 
 const typographyColors: DsTypographyColor[] = [
   "default",
@@ -459,14 +494,22 @@ export default function UiKitPage() {
   const [tableLoading, setTableLoading] = useState(false);
 
   // Form
-  const form = useAppForm(profileSchema, { fullName: "", email: "" });
+  const form = useAppForm(profileSchema, {
+    fullName: "",
+    email: "",
+    bio: "",
+    role: "",
+    newsletter: true,
+    terms: false,
+  });
   const [saving, setSaving] = useState(false);
-  const onSubmit = async (data: z.infer<typeof profileSchema>) => {
+  const [submitted, setSubmitted] = useState<ProfileFormData | null>(null);
+  const onSubmit = async (data: ProfileFormData) => {
     setSaving(true);
     await new Promise((r) => setTimeout(r, 800));
     setSaving(false);
+    setSubmitted(data);
     toast.success(`Saved ${data.fullName}`);
-    form.reset();
   };
 
   return (
@@ -865,20 +908,11 @@ export default function UiKitPage() {
       {/* Form */}
       <Section
         id="form"
-        title="DsForm + DsFormInput"
-        description="react-hook-form + zod. Submit empty to see validation (on blur / on submit)."
+        title="DsForm + DsForm* fields"
+        description="One zod schema drives every field. Submit empty to see all errors; the first invalid field gets focus."
       >
-        <DsForm
-          form={form}
-          onSubmit={onSubmit}
-          className="grid gap-5 sm:grid-cols-2"
-        >
-          <DsFormInput
-            name="fullName"
-            label="Full name"
-            placeholder="Ada Lovelace"
-            startIcon={<UserIcon />}
-          />
+        <DsForm form={form} onSubmit={onSubmit} className="grid gap-5 sm:grid-cols-2">
+          <DsFormInput name="fullName" label="Full name" placeholder="Ada Lovelace" startIcon={<UserIcon />} />
           <DsFormInput
             name="email"
             type="email"
@@ -886,15 +920,66 @@ export default function UiKitPage() {
             placeholder="ada@example.com"
             description="Used for notifications."
           />
+          <DsFormSelect name="role" label="Role" placeholder="Select a role" options={roleOptions} />
+          <DsFormCombobox
+            name="framework"
+            label="Framework"
+            options={frameworks}
+            placeholder="Select framework…"
+            searchPlaceholder="Search framework…"
+          />
+          <DsFormDatePicker
+            name="birthday"
+            label="Birthday"
+            placeholder="Pick your birthday"
+            captionLayout="dropdown"
+            startMonth={birthdayStartMonth}
+            endMonth={birthdayEndMonth}
+          />
+          <DsFormTextarea
+            name="bio"
+            label="Bio"
+            placeholder="A few words about you"
+            description="Max 160 characters."
+            className="sm:row-span-2"
+          />
+          <DsFormRadioGroup name="plan" label="Plan" options={planOptions} />
+          <div className="flex flex-col gap-5 sm:col-span-2">
+            <DsFormSwitch
+              name="newsletter"
+              label="Product newsletter"
+              description="One email a month, unsubscribe anytime."
+            />
+            <DsFormCheckbox name="terms" label="I accept the terms and conditions" />
+          </div>
           <div className="flex gap-2 sm:col-span-2">
             <DsButton type="submit" loading={saving}>
               Save
             </DsButton>
-            <DsButton variant="ghost" onClick={() => form.reset()}>
+            <DsButton
+              variant="ghost"
+              onClick={() => {
+                form.reset();
+                setSubmitted(null);
+              }}
+            >
               Reset
             </DsButton>
           </div>
         </DsForm>
+
+        {submitted && (
+          <DsBox variant="muted" padding="md">
+            <DsTypography variant="caption">Submitted values</DsTypography>
+            <pre className="mt-2 overflow-x-auto font-mono text-xs text-foreground">
+              {JSON.stringify(submitted, null, 2)}
+            </pre>
+          </DsBox>
+        )}
+
+        <Row label="DsDatePicker (standalone)">
+          <DsDatePicker className="w-64" />
+        </Row>
       </Section>
 
       {/* Overlays */}

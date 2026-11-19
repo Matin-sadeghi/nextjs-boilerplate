@@ -154,17 +154,48 @@ Each browser session and each server request gets its own `QueryClient` (created
 
 ### Forms
 
-`useAppForm(schema)` creates a React Hook Form instance validated by a Zod schema. Pass it to `DsForm` and use `DsFormInput` for registered inputs with error messages:
+`useAppForm(schema, defaultValues?)` creates a React Hook Form instance validated by a Zod schema. Pass it to `DsForm` and use the `DsForm*` fields inside. Each field takes `name`, `label`, `description` and `disabled`, and shows its validation error under the control. On submit, the first invalid field gets focus.
 
 ```tsx
-const form = useAppForm(authLoginSchema);
+const schema = z.object({
+  email: z.email("Enter a valid email"),
+  role: z.string().min(1, "Pick a role"),
+  birthday: z.date({ error: "Pick a date" }),
+  terms: z.boolean().refine(Boolean, "You must accept the terms"),
+});
+const form = useAppForm(schema, { email: "", role: "", terms: false });
 
-<DsForm form={form} onSubmit={(data) => submit(data)}>
+<DsForm form={form} onSubmit={(data) => save(data)}>
   <DsFormInput name="email" type="email" label="Email" />
-  <DsFormInput name="password" type="password" label="Password" />
-  <DsButton type="submit">Login</DsButton>
+  <DsFormSelect name="role" label="Role" options={[{ value: "admin", label: "Admin" }]} />
+  <DsFormDatePicker name="birthday" label="Birthday" captionLayout="dropdown" />
+  <DsFormCheckbox name="terms" label="I accept the terms" />
+  <DsButton type="submit">Save</DsButton>
 </DsForm>
 ```
+
+| Field | Value type | Zod |
+| --- | --- | --- |
+| `DsFormInput` | `string` | `z.string()`, `z.email()`, `z.coerce.number()` for numbers |
+| `DsFormTextarea` | `string` | `z.string().max(…)` |
+| `DsFormSelect` | `string` (`options` or custom `children`) | `z.string().min(1, …)` with default `""` |
+| `DsFormCombobox` | `string \| undefined` (searchable) | `z.string({ error: … })` |
+| `DsFormRadioGroup` | `string` (`options` with optional `description`) | `z.enum([...])` |
+| `DsFormCheckbox` | `boolean` | `z.boolean()`; must-accept: `.refine(Boolean, …)` |
+| `DsFormSwitch` | `boolean` | `z.boolean()` |
+| `DsFormDatePicker` | `Date \| undefined` | `z.date({ error: … })` |
+
+For a control that has no `DsForm*` version, wrap it in `DsFormField`. It connects the control to the form and renders the label, description and error:
+
+```tsx
+<DsFormField name="color" label="Color">
+  {({ field, controlProps }) => (
+    <MyColorPicker {...controlProps} value={field.value} onChange={field.onChange} onBlur={field.onBlur} />
+  )}
+</DsFormField>
+```
+
+Use `orientation="horizontal"` for checkbox-style controls (control first, label beside it).
 
 ### Design system
 
@@ -178,9 +209,11 @@ Open **`/ui-kit`** in the dev server to see every component and its variants (so
 | `DsTypography` | Text; `variant` = `h1`–`h4`, `body`, `bodySmall`, `helperText`, `caption`; `color` |
 | `DsButton` | `variant` = `primary`, `secondary`, `outline`, `ghost`, `danger`, `link`; `size` = `xs`–`lg`, `icon-xs`–`icon-lg`; `loading`, `asChild` |
 | `DsBadge` | Small status label |
-| `DsInput` / `DsFormInput` | Text input with icons and invalid state / React Hook Form version with label and error |
+| `DsInput` | Text input with icons and invalid state |
 | `DsTextarea`, `DsCheckbox`, `DsSelect`, `DsSwitch`, `DsRadioGroup` | Other form controls |
 | `DsCombobox` | Select with search for long lists; `options` with `keywords` for extra search terms |
+| `DsDatePicker` | Button + popover calendar; `disabledDates`, `captionLayout="dropdown"`, `locale` |
+| `DsForm*`, `DsFormField` | Form-connected versions of every control (see [Forms](#forms)) |
 | `DsAlertDialog` | Confirmation before destructive or important actions |
 | `DsSheet` | Side panel (`side` = `right`, `left`, `top`, `bottom`): mobile menu, filters, quick edit |
 | `DsCommand` / `DsCommandDialog` | Searchable command list / ⌘K command palette (cmdk) |
